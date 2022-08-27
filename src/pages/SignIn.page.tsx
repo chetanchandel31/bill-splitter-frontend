@@ -1,6 +1,12 @@
-import { Box, Button, Link, Sheet, TextField, Typography } from "@mui/joy";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  MailOutlined,
+} from "@ant-design/icons";
+import { Button, Card, Form, Input, Typography } from "antd";
 import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
+import styles from "./auth.module.css";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -11,67 +17,82 @@ const SignIn = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Sheet
-        sx={{
-          maxWidth: 400,
-          width: "100%",
-          mx: 2,
-          my: 8,
-          py: 3,
-          px: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          borderRadius: "sm",
-          boxShadow: "md",
-        }}
-        variant="outlined"
+    <div className={styles.formContainer}>
+      <Card
+        title="Sign in to continue"
+        bordered={false}
+        className={styles.card}
       >
-        <div>
-          <Typography level="h4" component="h1">
-            <b>Welcome!</b>
-          </Typography>
-          <Typography level="body2">Sign in to continue</Typography>
-        </div>
-        <TextField
-          label="Email"
-          name="email"
-          onChange={({ target }) => setEmail(target.value)}
-          placeholder="johndoe@email.com"
-          type="email"
-          value={email}
-        />
-        <TextField
-          label="Password"
-          name="password"
-          onChange={({ target }) => setPassword(target.value)}
-          type="password"
-          placeholder="password"
-          value={password}
-        />
+        <Form
+          name="basic"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          initialValues={{ remember: true }}
+          onFinish={handleSignin}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input
+              name="email"
+              type="email"
+              onChange={({ target }) => setEmail(target.value)}
+              placeholder="Enter your email"
+              prefix={<MailOutlined className="site-form-item-icon" />}
+              value={email}
+            />
+          </Form.Item>
 
-        <Button
-          disabled={!email || !password}
-          onClick={handleSignin}
-          sx={{ mt: 1 }}
-        >
-          Sign in
-        </Button>
-        <Button variant="soft">Use dummy credentials</Button>
-        <Typography
-          endDecorator={
-            <Link component={ReactRouterLink} to="/sign-up">
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password
+              onChange={({ target }) => setPassword(target.value)}
+              placeholder="input password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+              value={password}
+            />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ span: 24 }}>
+            <Button
+              block
+              className={styles.btnCta}
+              disabled={!email || !password}
+              type="primary"
+              htmlType="submit"
+            >
+              Sign in
+            </Button>
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ span: 24 }}>
+            <Button block>Use dummy credentials</Button>
+          </Form.Item>
+        </Form>
+
+        <div className={styles.helperText}>
+          <Typography.Text>Don't have an account?</Typography.Text>
+          <ReactRouterLink to="/sign-up">
+            <Button size="small" type="link">
               Sign up
-            </Link>
-          }
-          fontSize="sm"
-          sx={{ alignSelf: "center" }}
-        >
-          Don't have an account?
-        </Typography>
-      </Sheet>
-    </Box>
+            </Button>
+          </ReactRouterLink>
+        </div>
+      </Card>
+    </div>
   );
 };
 

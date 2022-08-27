@@ -1,6 +1,14 @@
-import { Box, Button, Link, Sheet, TextField, Typography } from "@mui/joy";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  MailOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import { Button, Card, Form, Input, Typography } from "antd";
+import useSignup from "api/hooks/auth/useSignup";
 import { useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
+import styles from "./auth.module.css";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -12,103 +20,116 @@ const SignUp = () => {
   const doDisableSignup =
     !name || !email || !password || !confirmPassword || !doConfirmPasswordMatch;
 
+  const { mutate } = useSignup();
+
   const handleSignup = () => {
-    console.log("sign uppp");
+    mutate({ email, name, password });
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Sheet
-        sx={{
-          maxWidth: 400,
-          width: "100%",
-          mx: 2,
-          my: 8,
-          py: 3,
-          px: 2,
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          borderRadius: "sm",
-          boxShadow: "md",
-        }}
-        variant="outlined"
+    <div className={styles.formContainer}>
+      <Card
+        title="Sign in to continue"
+        bordered={false}
+        className={styles.card}
       >
-        <div>
-          <Typography level="h4" component="h1">
-            <b>Welcome!</b>
-          </Typography>
-          <Typography level="body2">Sign up to continue</Typography>
-        </div>
-        <TextField
-          name="name"
-          type="text"
-          placeholder="john doe"
-          label="Name"
-          onChange={({ target }) => setName(target.value)}
-          value={name}
-        />
-        <TextField
-          name="email"
-          type="email"
-          placeholder="johndoe@email.com"
-          label="Email"
-          onChange={({ target }) => setEmail(target.value)}
-          value={email}
-        />
-        <TextField
-          name="password"
-          type="password"
-          placeholder="password"
-          label="Password"
-          onChange={({ target }) => setPassword(target.value)}
-          value={password}
-        />
-        <TextField
-          name="confirm-password"
-          type="password"
-          placeholder="confirm password"
-          label="Confirm Password"
-          onChange={({ target }) => setConfirmPassword(target.value)}
-          value={confirmPassword}
-        />
-
-        {confirmPassword && !doConfirmPasswordMatch && (
-          <Typography
-            variant="soft"
-            color="danger"
-            startDecorator="🚨"
-            py={1}
-            px={1}
-            borderRadius="xs"
-            display="inline-flex"
-            fontSize="sm"
-            sx={{ "--Typography-gap": "0.5rem" }}
+        <Form
+          name="basic"
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+          initialValues={{ remember: true }}
+          onFinish={handleSignup}
+          autoComplete="off"
+        >
+          <Form.Item
+            label="Username"
+            name="name"
+            rules={[{ required: true, message: "Please input your name!" }]}
           >
-            Passwords don't match
-          </Typography>
-        )}
+            <Input
+              onChange={({ target }) => setName(target.value)}
+              placeholder="Enter your username"
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              value={name}
+            />
+          </Form.Item>
 
-        <Button
-          disabled={doDisableSignup}
-          onClick={handleSignup}
-          sx={{ mt: 1 }}
-        >
-          Sign up
-        </Button>
-        <Typography
-          endDecorator={
-            <Link component={ReactRouterLink} to="/sign-in">
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input
+              onChange={({ target }) => setEmail(target.value)}
+              placeholder="Enter your email"
+              prefix={<MailOutlined className="site-form-item-icon" />}
+              value={email}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password
+              onChange={({ target }) => setPassword(target.value)}
+              placeholder="enter password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+              value={password}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirm Password"
+            name="confirm-password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your password!",
+              },
+            ]}
+          >
+            <Input.Password
+              onChange={({ target }) => setConfirmPassword(target.value)}
+              placeholder="re-enter password"
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
+              value={confirmPassword}
+            />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ span: 24 }}>
+            <Button
+              block
+              disabled={doDisableSignup}
+              className={styles.btnCta}
+              type="primary"
+              htmlType="submit"
+            >
+              Sign up
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <div className={styles.helperText}>
+          <Typography.Text>Already have an account?</Typography.Text>
+          <ReactRouterLink to="/sign-in">
+            <Button size="small" type="link">
               Sign in
-            </Link>
-          }
-          fontSize="sm"
-          sx={{ alignSelf: "center" }}
-        >
-          Already have an account?
-        </Typography>
-      </Sheet>
-    </Box>
+            </Button>
+          </ReactRouterLink>
+        </div>
+      </Card>
+    </div>
   );
 };
 
