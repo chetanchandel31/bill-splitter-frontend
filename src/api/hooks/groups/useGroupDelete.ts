@@ -8,6 +8,7 @@ import { AxiosResponse } from "axios";
 import { AxiosErrorBillSplitter, Group } from "types";
 
 export type SuccessResponseGroupDelete = AxiosResponse<Group>;
+
 type PayloadGroupDelete = {
   groupId: string;
 };

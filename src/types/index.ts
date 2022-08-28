@@ -19,3 +19,10 @@ export type Group = {
   members: string[];
   _id: string;
 };
+
+export type GroupWithMemberDetails = {
+  groupName: string;
+  admins: User[];
+  members: User[];
+  _id: string;
+};

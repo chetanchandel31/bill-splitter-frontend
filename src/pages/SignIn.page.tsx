@@ -19,7 +19,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
 
   const onSuccess = ({ data }: SuccessResponseSignin) => {
-    message.success("signed in successfully");
+    message.success(`Welcome ${data.user.name}`);
     signIn(data); // basically sets user info in 1. context and 2. local storage and redirects
   };
 

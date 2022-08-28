@@ -1,14 +1,17 @@
-import { Button, message, PageHeader } from "antd";
+import { message } from "antd";
 import useGroupCreate from "api/hooks/groups/useGroupCreate";
 import useGroupDelete from "api/hooks/groups/useGroupDelete";
 import useGroupsList from "api/hooks/groups/useGroupsList";
 import { useAuth } from "contexts/auth-context";
+import { useSelectedGroup } from "contexts/group-context";
+import Header from "helpers/Header";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
 
 const GroupSelection = () => {
+  const { selectGroup } = useSelectedGroup();
   // this is a protected page, only user with no group selected is supposed to be here
-  const { userInfo, signOut } = useAuth();
+  const { userInfo } = useAuth();
   const [doShowGroups, setDoShowGroups] = useState(true);
   const [newGroupName, setNewGroupName] = useState("");
 
@@ -34,20 +37,7 @@ const GroupSelection = () => {
 
   return (
     <div>
-      <PageHeader
-        // ghost={false}
-        style={{ backgroundColor: "#001529", color: "#ececec" }}
-        // title="Title"
-        // subTitle="This is a subtitle"
-        extra={[
-          <Button key="3">Operation</Button>,
-
-          <Button danger onClick={signOut} key="1" type="primary">
-            {/* TODO: add confirmation */}
-            Logout
-          </Button>,
-        ]}
-      ></PageHeader>
+      <Header />
       hi {userInfo?.user.name}
       <h2>
         <button
@@ -85,6 +75,7 @@ const GroupSelection = () => {
               <button onClick={() => deleteGroup({ groupId: group._id })}>
                 delete
               </button>
+              <button onClick={() => selectGroup(group._id)}>select</button>
             </div>
           ))}
           {isGroupDeleteLoading && (
