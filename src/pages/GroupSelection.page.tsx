@@ -1,5 +1,6 @@
 import { Button, message, PageHeader } from "antd";
 import useGroupCreate from "api/hooks/groups/useGroupCreate";
+import useGroupDelete from "api/hooks/groups/useGroupDelete";
 import useGroupsList from "api/hooks/groups/useGroupsList";
 import { useAuth } from "contexts/auth-context";
 import { useState } from "react";
@@ -23,6 +24,13 @@ const GroupSelection = () => {
   const { data: groupsList, isFetching: isGroupsListLoading } = useGroupsList({
     onError: showErrorMessage,
   });
+
+  const { isLoading: isGroupDeleteLoading, mutate: deleteGroup } =
+    useGroupDelete({
+      onError: showErrorMessage,
+      onSuccess: (data) =>
+        message.success(`'Group: ${data.data.groupName}' deleted successfully`),
+    });
 
   return (
     <div>
@@ -72,8 +80,16 @@ const GroupSelection = () => {
             create group
           </button>
           {groupsList?.data.map((group) => (
-            <div key={group._id}>{group.groupName}</div>
+            <div key={group._id}>
+              {group.groupName}{" "}
+              <button onClick={() => deleteGroup({ groupId: group._id })}>
+                delete
+              </button>
+            </div>
           ))}
+          {isGroupDeleteLoading && (
+            <h3 style={{ border: "solid 1px blue" }}>deleting...</h3>
+          )}
           {isGroupsListLoading && (
             <h3 style={{ border: "solid 1px blue" }}>loading list...</h3>
           )}
