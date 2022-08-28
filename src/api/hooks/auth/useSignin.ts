@@ -19,7 +19,7 @@ const signUp: MutationFunction<SuccessResponseSignin, PayloadSignin> = ({
   email,
   password,
 }) => {
-  return API.post("/sign-in", { email, password });
+  return API.post<UserInfo>("/sign-in", { email, password });
 };
 
 const useSignin = ({ onError, onSuccess }: UseSigninParams) => {

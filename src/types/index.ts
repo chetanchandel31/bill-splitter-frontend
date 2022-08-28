@@ -12,3 +12,9 @@ export type UserInfo = {
   token: string;
   user: User;
 };
+
+export type Group = {
+  groupName: string;
+  admins: string[]; // later can be (User | string)[]
+  members: string[];
+};

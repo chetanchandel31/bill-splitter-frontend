@@ -21,7 +21,7 @@ const signUp: MutationFunction<SuccessResponseSignup, PayloadSignup> = ({
   name,
   password,
 }) => {
-  return API.post("/sign-up", { email, name, password });
+  return API.post<User>("/sign-up", { email, name, password });
 };
 
 const useSignup = ({ onError, onSuccess }: UseSignupParams) => {
