@@ -1,5 +1,6 @@
 import { Button, message, PageHeader } from "antd";
 import useGroupCreate from "api/hooks/groups/useGroupCreate";
+import useGroupsList from "api/hooks/groups/useGroupsList";
 import { useAuth } from "contexts/auth-context";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
@@ -10,10 +11,17 @@ const GroupSelection = () => {
   const [doShowGroups, setDoShowGroups] = useState(true);
   const [newGroupName, setNewGroupName] = useState("");
 
-  const { mutate: createGroup, isLoading } = useGroupCreate({
+  const { mutate: createGroup, isLoading: isGroupCreateLoading } =
+    useGroupCreate({
+      onError: showErrorMessage,
+      onSuccess: (data) =>
+        message.success(
+          `new group ${data.data.groupName} created successfully`
+        ),
+    });
+
+  const { data: groupsList, isFetching: isGroupsListLoading } = useGroupsList({
     onError: showErrorMessage,
-    onSuccess: (data) =>
-      message.success(`new group ${data.data.groupName} created successfully`),
   });
 
   return (
@@ -40,8 +48,7 @@ const GroupSelection = () => {
           }}
         >
           groups
-        </button>{" "}
-        |{" "}
+        </button>
         <button
           onClick={() => {
             setDoShowGroups(false);
@@ -64,7 +71,13 @@ const GroupSelection = () => {
           >
             create group
           </button>
-          {isLoading && (
+          {groupsList?.data.map((group) => (
+            <div key={group._id}>{group.groupName}</div>
+          ))}
+          {isGroupsListLoading && (
+            <h3 style={{ border: "solid 1px blue" }}>loading list...</h3>
+          )}
+          {isGroupCreateLoading && (
             <h3 style={{ border: "solid 1px blue" }}>creating group...</h3>
           )}
         </>

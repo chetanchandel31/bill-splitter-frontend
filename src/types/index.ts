@@ -17,4 +17,5 @@ export type Group = {
   groupName: string;
   admins: string[]; // later can be (User | string)[]
   members: string[];
+  _id: string;
 };
