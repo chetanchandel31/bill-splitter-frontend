@@ -1,10 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { MutationFunction, useMutation } from "@tanstack/react-query";
 import { API } from "api/API";
-import { AxiosError } from "axios";
+import { AxiosResponse } from "axios";
+import { AxiosErrorBillSplitter, User } from "types";
 
-export type SuccessResponseSignup = {
-  aa: "aa";
-};
+export type SuccessResponseSignup = AxiosResponse<User>;
 
 type PayloadSignup = {
   name: string;
@@ -12,12 +11,28 @@ type PayloadSignup = {
   email: string;
 };
 
-const useSignup = () => {
-  return useMutation<SuccessResponseSignup, AxiosError, PayloadSignup>(
-    ({ email, name, password }) => {
-      return API.post("/sign-up", { email, name, password });
-    }
-  );
+type UseSignupParams = {
+  onError?: (error: AxiosErrorBillSplitter) => void;
+  onSuccess?: (data: SuccessResponseSignup) => void;
+};
+
+const signUp: MutationFunction<SuccessResponseSignup, PayloadSignup> = ({
+  email,
+  name,
+  password,
+}) => {
+  return API.post("/sign-up", { email, name, password });
+};
+
+const useSignup = ({ onError, onSuccess }: UseSignupParams) => {
+  return useMutation<
+    SuccessResponseSignup,
+    AxiosErrorBillSplitter,
+    PayloadSignup
+  >(signUp, {
+    onSuccess,
+    onError,
+  });
 };
 
 export default useSignup;

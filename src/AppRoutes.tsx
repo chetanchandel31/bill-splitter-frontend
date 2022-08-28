@@ -1,5 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Result } from "antd";
+import { AuthProvider } from "contexts/auth-context";
 import ProtectedRoute from "helpers/ProtectedRoute";
 import SignIn from "pages/SignIn.page";
 import SignUp from "pages/SignUp.page";
@@ -12,27 +14,40 @@ function AppRoutes() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <Routes>
-          <Route path="/" element={<>home</>} />
-          <Route
-            path="/sign-in"
-            element={
-              <ProtectedRoute protectFrom="authenticatedUser">
-                <SignIn />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/sign-up"
-            element={
-              <ProtectedRoute protectFrom="authenticatedUser">
-                <SignUp />
-              </ProtectedRoute>
-            }
-          />
-          <Route element={<h2>{`could not find this page :(`}</h2>} path="*" />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<>home</>} />
+            <Route
+              path="/sign-in"
+              element={
+                <ProtectedRoute protectFrom="authenticatedUser">
+                  <SignIn />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/sign-up"
+              element={
+                <ProtectedRoute protectFrom="authenticatedUser">
+                  <SignUp />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              element={
+                <Result
+                  status="404"
+                  title="404"
+                  subTitle="Sorry, the page you visited does not exist."
+                  // extra={<Button type="primary">Back Home</Button>}
+                />
+              }
+              path="*"
+            />
+          </Routes>
+        </AuthProvider>
       </Router>
+
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

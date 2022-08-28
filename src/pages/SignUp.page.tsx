@@ -4,13 +4,17 @@ import {
   MailOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Form, Input, Typography } from "antd";
+import { Alert, Button, Card, Form, Input, message, Typography } from "antd";
 import useSignup from "api/hooks/auth/useSignup";
 import { useState } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
+import { showErrorMessage } from "utils";
 import styles from "./auth.module.css";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +24,17 @@ const SignUp = () => {
   const doDisableSignup =
     !name || !email || !password || !confirmPassword || !doConfirmPasswordMatch;
 
-  const { mutate } = useSignup();
+  const onSuccess = () => {
+    navigate("/sign-in");
+    message.success(
+      "Signup successful, you can now sign in with your newly created account"
+    );
+  };
+
+  const { isLoading, mutate } = useSignup({
+    onSuccess,
+    onError: showErrorMessage,
+  });
 
   const handleSignup = () => {
     mutate({ email, name, password });
@@ -34,6 +48,7 @@ const SignUp = () => {
         className={styles.card}
       >
         <Form
+          form={form}
           name="basic"
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
@@ -57,9 +72,18 @@ const SignUp = () => {
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please input a valid email!",
+                // eslint-disable-next-line no-useless-escape
+                pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+              },
+            ]}
           >
             <Input
+              name="email"
+              type="email"
               onChange={({ target }) => setEmail(target.value)}
               placeholder="Enter your email"
               prefix={<MailOutlined className="site-form-item-icon" />}
@@ -73,7 +97,8 @@ const SignUp = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
+                message: "Please input a password with minimum 6 characters",
+                min: 6,
               },
             ]}
           >
@@ -93,7 +118,8 @@ const SignUp = () => {
             rules={[
               {
                 required: true,
-                message: "Please input your password!",
+                message: "Please input a password with minimum 6 characters",
+                min: 6,
               },
             ]}
           >
@@ -107,11 +133,16 @@ const SignUp = () => {
             />
           </Form.Item>
 
+          {confirmPassword && !doConfirmPasswordMatch && (
+            <Alert message="Passwords don't match" type="error" showIcon />
+          )}
+
           <Form.Item wrapperCol={{ span: 24 }}>
             <Button
               block
               disabled={doDisableSignup}
               className={styles.btnCta}
+              loading={isLoading}
               type="primary"
               htmlType="submit"
             >
