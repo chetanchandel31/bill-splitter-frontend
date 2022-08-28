@@ -23,12 +23,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signIn = (userInfo: UserInfo) => {
     setUserInfo(userInfo);
     localStorage.setItem("jwt", JSON.stringify(userInfo));
-    navigate("/");
+    navigate("/group-selection");
   };
 
   const signOut = () => {
     setUserInfo(null);
     localStorage.removeItem("jwt");
+    localStorage.removeItem("selected-group");
     navigate("/sign-in");
   };
 

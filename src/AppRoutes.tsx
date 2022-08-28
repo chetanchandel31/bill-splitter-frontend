@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Result } from "antd";
 import { AuthProvider } from "contexts/auth-context";
 import ProtectedRoute from "helpers/ProtectedRoute";
+import GroupSelection from "pages/GroupSelection.page";
 import SignIn from "pages/SignIn.page";
 import SignUp from "pages/SignUp.page";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -16,11 +17,19 @@ function AppRoutes() {
       <Router>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<>home</>} />
+            <Route path="/" element={<ProtectedRoute>home</ProtectedRoute>} />
+            <Route
+              path="/group-selection"
+              element={
+                <ProtectedRoute meantFor="authentiactedUserWithoutSelectedGroup">
+                  <GroupSelection />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/sign-in"
               element={
-                <ProtectedRoute protectFrom="authenticatedUser">
+                <ProtectedRoute meantFor="unauthenticatedUser">
                   <SignIn />
                 </ProtectedRoute>
               }
@@ -28,7 +37,7 @@ function AppRoutes() {
             <Route
               path="/sign-up"
               element={
-                <ProtectedRoute protectFrom="authenticatedUser">
+                <ProtectedRoute meantFor="unauthenticatedUser">
                   <SignUp />
                 </ProtectedRoute>
               }
