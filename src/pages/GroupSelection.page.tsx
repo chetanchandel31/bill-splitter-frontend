@@ -2,6 +2,7 @@ import { message } from "antd";
 import useGroupCreate from "api/hooks/groups/useGroupCreate";
 import useGroupDelete from "api/hooks/groups/useGroupDelete";
 import useGroupsList from "api/hooks/groups/useGroupsList";
+import InvitationsList from "components/InvitationsList";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import Header from "helpers/Header";
@@ -91,6 +92,7 @@ const GroupSelection = () => {
       ) : (
         <>
           <h1>invites list</h1>
+          <InvitationsList />
         </>
       )}
     </div>

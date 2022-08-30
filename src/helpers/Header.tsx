@@ -2,6 +2,7 @@ import { Button, PageHeader } from "antd";
 import { useAuth } from "contexts/auth-context";
 import { useNavigate } from "react-router-dom";
 
+// TODO: move to components
 const Header = () => {
   const { signOut } = useAuth();
   const navigate = useNavigate();

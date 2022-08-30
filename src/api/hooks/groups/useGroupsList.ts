@@ -3,11 +3,11 @@ import { API } from "api/API";
 import { AxiosResponse } from "axios";
 import { AxiosErrorBillSplitter, Group } from "types";
 
-export type SuccessResponseUseGroupList = AxiosResponse<Group[]>;
+export type SuccessResponseUseGroupsList = AxiosResponse<Group[]>;
 
 type UseGroupsListParams = {
   onError?: (error: AxiosErrorBillSplitter) => void;
-  onSuccess?: (data: SuccessResponseUseGroupList) => void;
+  onSuccess?: (data: SuccessResponseUseGroupsList) => void;
 };
 
 const listGroups = () => {
@@ -15,7 +15,7 @@ const listGroups = () => {
 };
 
 const useGroupsList = ({ onError, onSuccess }: UseGroupsListParams) => {
-  return useQuery<SuccessResponseUseGroupList, AxiosErrorBillSplitter>(
+  return useQuery<SuccessResponseUseGroupsList, AxiosErrorBillSplitter>(
     ["groups-list"],
     listGroups,
     {

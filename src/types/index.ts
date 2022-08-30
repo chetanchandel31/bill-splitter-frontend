@@ -26,3 +26,9 @@ export type GroupWithMemberDetails = {
   members: User[];
   _id: string;
 };
+
+export type Invite = {
+  invitedBy: User;
+  invitedTo: Group;
+  _id: string;
+};
