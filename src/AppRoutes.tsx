@@ -13,7 +13,7 @@ import SignUp from "pages/SignUp.page";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 // TODO: code splitting for routes
-// TODO: turn of refetching on focus of tab
+// TODO: turn off refetching on focus of tab
 const queryClient = new QueryClient();
 
 function AppRoutes() {
