@@ -4,3 +4,9 @@
   align-items: center;
   padding-bottom: 8px;
 }
+
+.groupSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

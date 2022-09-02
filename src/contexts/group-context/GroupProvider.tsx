@@ -17,7 +17,7 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     navigate("/group-selection");
   };
 
-  const { data } = useGroupGetById({
+  const { data, isFetching } = useGroupGetById({
     enabled: typeof selectedGroupId === "string",
     groupId: selectedGroupId as string,
     onError,
@@ -37,6 +37,7 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     <GroupContext.Provider
       value={{
         doHaveSelectedGroup: !!selectedGroupId,
+        isSelectedGroupLoading: isFetching,
         selectedGroupDetails: data?.data ?? null,
         selectGroup,
       }}

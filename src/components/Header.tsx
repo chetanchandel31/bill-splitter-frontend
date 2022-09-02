@@ -3,28 +3,53 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import styles from "./header.module.css";
-import { Button, PageHeader, Popover, Select } from "antd";
+import { Button, PageHeader, Popover, Select, Typography } from "antd";
+import useGroupsList from "api/hooks/groups/useGroupsList";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
+import { showErrorMessage } from "utils";
+import styles from "./header.module.css";
 
 const { Option } = Select;
 
 const Header = () => {
   const { userInfo, signOut } = useAuth();
-  const { doHaveSelectedGroup, selectGroup } = useSelectedGroup();
+
+  const {
+    doHaveSelectedGroup,
+    isSelectedGroupLoading,
+    selectGroup,
+    selectedGroupDetails,
+  } = useSelectedGroup();
+
+  const { data: groupsList, isFetching: isGroupsListLoading } = useGroupsList({
+    onError: showErrorMessage,
+  });
 
   return (
-    <PageHeader
-      // ghost={false}
-      style={{ backgroundColor: "#001529", color: "#ececec" }}
-      // title="Title"
-      // subTitle="This is a subtitle"
-    >
+    <PageHeader style={{ backgroundColor: "#001529" }}>
       <div className={styles.headerContainer}>
-        <Select defaultValue="lucy" style={{ width: 120 }} loading>
-          <Option value="lucy">Lucy</Option>
-        </Select>
+        <div className={styles.groupSelector}>
+          {doHaveSelectedGroup && (
+            <>
+              <Typography style={{ color: "#ececec" }}>
+                Selected group:
+              </Typography>
+              <Select
+                loading={isGroupsListLoading || isSelectedGroupLoading}
+                onChange={(value) => selectGroup(value)}
+                style={{ width: 120 }}
+                value={selectedGroupDetails?._id} // TODO: value becomes undefined for couple sec after selecting group, can do a better implementation
+              >
+                {groupsList?.data.map((group) => (
+                  <Option key={group._id} value={group._id}>
+                    {group.groupName}
+                  </Option>
+                ))}
+              </Select>
+            </>
+          )}
+        </div>
 
         <Popover
           key="1"
