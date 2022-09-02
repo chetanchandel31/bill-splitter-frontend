@@ -23,9 +23,14 @@ export const GroupProvider = ({ children }: { children: ReactNode }) => {
     onError,
   });
 
-  const selectGroup = (groupId: string) => {
-    navigate("/");
-    localStorage.setItem("selected-group", groupId);
+  const selectGroup = (groupId: string | null) => {
+    if (groupId) {
+      navigate("/");
+      localStorage.setItem("selected-group", groupId);
+    } else {
+      navigate("/group-selection");
+      localStorage.removeItem("selected-group");
+    }
   };
 
   return (

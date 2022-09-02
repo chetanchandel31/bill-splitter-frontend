@@ -2,7 +2,7 @@ import { Radio, RadioChangeEvent } from "antd";
 import { useSelectedGroup } from "contexts/group-context";
 import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Header from "./Header";
+import Header from "components/Header";
 
 // TODO: move to components
 const Layout = ({ children }: { children: ReactNode }) => {

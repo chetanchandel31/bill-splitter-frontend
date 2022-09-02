@@ -5,7 +5,7 @@ import useGroupsList from "api/hooks/groups/useGroupsList";
 import InvitationsList from "components/InvitationsList";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
-import Header from "helpers/Header";
+import Header from "components/Header";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
 
