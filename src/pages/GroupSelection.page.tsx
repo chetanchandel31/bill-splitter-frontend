@@ -1,4 +1,5 @@
-import { message } from "antd";
+import styles from "./group-selection.module.css";
+import { message, Tabs } from "antd";
 import useGroupCreate from "api/hooks/groups/useGroupCreate";
 import useGroupDelete from "api/hooks/groups/useGroupDelete";
 import useGroupsList from "api/hooks/groups/useGroupsList";
@@ -8,6 +9,8 @@ import { useSelectedGroup } from "contexts/group-context";
 import Header from "components/Header";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
+
+const { TabPane } = Tabs;
 
 const GroupSelection = () => {
   const { selectGroup } = useSelectedGroup();
@@ -39,7 +42,25 @@ const GroupSelection = () => {
   return (
     <div>
       <Header />
-      hi {userInfo?.user.name}
+      <div className={styles.tabsContainer}>
+        <div className="card-container">
+          <Tabs centered type="card">
+            <TabPane tab="Groups" key="1">
+              <p>Content of Tab Pane 1</p>
+              <p>Content of Tab Pane 1</p>
+              <p>Content of Tab Pane 1</p>
+            </TabPane>
+            <TabPane tab="Invites" key="2">
+              <p>Content of Tab Pane 2</p>
+              <p>Content of Tab Pane 2</p>
+              <p>Content of Tab Pane 2</p>
+            </TabPane>
+          </Tabs>
+        </div>
+      </div>
+      <hr />
+      {/* TODO: */}
+      Welcome, <strong>{userInfo?.user.name}</strong>
       <h2>
         <button
           onClick={() => {
