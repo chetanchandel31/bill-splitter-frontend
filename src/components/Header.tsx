@@ -84,7 +84,12 @@ const Header = () => {
             </>
           }
           placement="bottomRight"
-          title={"Username: " + userInfo?.user.name}
+          title={
+            <>
+              <strong>Username: </strong>
+              <Typography.Text copyable>{userInfo?.user.name}</Typography.Text>
+            </>
+          }
           trigger="click"
         >
           <Button icon={<UserOutlined />} type="primary"></Button>
