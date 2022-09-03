@@ -26,6 +26,8 @@ const Header = () => {
     onError: showErrorMessage,
   });
 
+  // TODO: try to make it fixed header
+
   return (
     <PageHeader style={{ backgroundColor: "#001529" }}>
       <div className={styles.headerContainer}>

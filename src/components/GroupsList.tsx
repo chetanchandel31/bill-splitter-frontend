@@ -2,6 +2,7 @@ import {
   CrownOutlined,
   DeleteOutlined,
   SelectOutlined,
+  ShopOutlined,
   UsergroupAddOutlined,
 } from "@ant-design/icons";
 import {
@@ -124,7 +125,6 @@ const GroupsList = () => {
             className="demo-loadmore-list"
             // loading={initLoading}
             itemLayout="horizontal"
-            // loadMore={loadMore}
             dataSource={groupsList?.data}
             renderItem={(group) => (
               <List.Item
@@ -156,14 +156,8 @@ const GroupsList = () => {
                   </Tooltip>,
                 ]}
               >
-                {/* <Skeleton
-              avatar
-              title={false}
-              //  loading={group.loading}
-              active
-            > */}
                 <List.Item.Meta
-                  // avatar={<Avatar src={group.picture.large} />}
+                  avatar={<ShopOutlined />}
                   title={group.groupName}
                   // description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                 />
@@ -176,7 +170,6 @@ const GroupsList = () => {
                     <Tag color="warning">Member</Tag>
                   )}
                 </div>
-                {/* </Skeleton> */}
               </List.Item>
             )}
           />
