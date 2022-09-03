@@ -73,7 +73,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
         <div className={styles.rightPanel}>
           <Header />
-          <Content className="site-layout">
+          <Content className="site-layout" style={{ margin: "0 16px" }}>
             <div
               className={`site-layout-background ${styles.contentContainer}`}
             >
