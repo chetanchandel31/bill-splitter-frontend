@@ -17,7 +17,7 @@ const Header = () => {
 
   const {
     doHaveSelectedGroup,
-    isSelectedGroupLoading,
+    isSelectedGroupFetching,
     selectGroup,
     selectedGroupDetails,
   } = useSelectedGroup();
@@ -38,7 +38,7 @@ const Header = () => {
                 Selected group:
               </Typography>
               <Select
-                loading={isGroupsListLoading || isSelectedGroupLoading}
+                loading={isGroupsListLoading || isSelectedGroupFetching}
                 onChange={(value) => selectGroup(value)}
                 style={{ width: 120 }}
                 value={selectedGroupDetails?._id} // TODO: value becomes undefined for couple sec after selecting group, can do a better implementation

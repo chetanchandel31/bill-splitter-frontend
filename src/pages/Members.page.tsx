@@ -6,7 +6,7 @@ import { useState } from "react";
 import { showErrorMessage } from "utils";
 
 const Members = () => {
-  const { selectedGroupDetails } = useSelectedGroup();
+  const { selectedGroupDetails, isSelectedGroupLoading } = useSelectedGroup();
   const [newMemberName, setNewMemberName] = useState("");
 
   const { mutate, isLoading } = useInviteSend({
