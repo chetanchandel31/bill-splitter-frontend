@@ -1,17 +1,14 @@
-import { ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import styles from "./layout.module.css";
 import {
-  FileOutlined,
+  MailOutlined,
   PieChartOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout as AntDLayout, Menu } from "antd";
-import "antd/lib/layout/style/index.css";
-import "antd/lib/menu/style/index.css";
-import "antd/lib/slider/style/index.css";
 import Header from "components/Header";
+import { ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import styles from "./layout.module.css";
 
 const { Content, Sider } = AntDLayout;
 
@@ -37,7 +34,7 @@ const items: MenuItem[] = [
     getItem("Personal Expenses", "/personal-expenses"),
   ]),
   getItem("Members", "/members", <TeamOutlined />),
-  getItem("Invitations", "/invitations", <FileOutlined />),
+  getItem("Invitations", "/invitations", <MailOutlined />),
 ];
 
 const Layout = ({ children }: { children: ReactNode }) => {
