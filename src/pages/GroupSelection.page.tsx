@@ -9,6 +9,7 @@ import { useSelectedGroup } from "contexts/group-context";
 import Header from "components/Header";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
+import GroupsList from "components/GroupsList";
 
 const { TabPane } = Tabs;
 
@@ -46,10 +47,9 @@ const GroupSelection = () => {
         <div className="card-container">
           <Tabs centered type="card">
             <TabPane tab="Groups" key="1">
-              <p>Content of Tab Pane 1</p>
-              <p>Content of Tab Pane 1</p>
-              <p>Content of Tab Pane 1</p>
+              <GroupsList />
             </TabPane>
+
             <TabPane tab="Invites" key="2">
               <p>Content of Tab Pane 2</p>
               <p>Content of Tab Pane 2</p>
