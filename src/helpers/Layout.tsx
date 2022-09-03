@@ -1,21 +1,19 @@
-// import {  RadioChangeEvent } from "antd";
-// import { useSelectedGroup } from "contexts/group-context";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import Header from "components/Header";
-
-// TODO: move to components
+import styles from "./layout.module.css";
 import {
-  DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
   TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout as AntDLayout, Menu } from "antd";
+import { Layout as AntDLayout, Menu } from "antd";
+import "antd/lib/layout/style/index.css";
+import "antd/lib/menu/style/index.css";
+import "antd/lib/slider/style/index.css";
+import Header from "components/Header";
 
-const { Header: AntdHeader, Content, Footer, Sider } = AntDLayout;
+const { Content, Sider } = AntDLayout;
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -34,81 +32,59 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Option 1", "/", <PieChartOutlined />),
-  getItem("Option 2", "/invitations", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
+  getItem("Expenses", "sub1", <PieChartOutlined />, [
+    getItem("Groups Expenses", "/"),
+    getItem("Personal Expenses", "/personal-expenses"),
   ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+  getItem("Members", "/members", <TeamOutlined />),
+  getItem("Invitations", "/invitations", <FileOutlined />),
 ];
 
 const Layout = ({ children }: { children: ReactNode }) => {
   // this should be used only for pages after group selection
-  // const { selectedGroupDetails } = useSelectedGroup();
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // const switchTabs = (e: RadioChangeEvent) => {
-  //   navigate(e.target.value);
-  // };
-
-  const [collapsed, setCollapsed] = useState(false);
-
+  // antd's layout component jumps on first render :(
+  // TODO: footer?
   return (
     <>
-      {/* <Header />
+      <div className={styles.layoutContainer}>
+        <div>
+          <Sider
+            breakpoint="md"
+            collapsedWidth="50"
+            onBreakpoint={(broken) => {
+              console.log(broken);
+            }}
+            onCollapse={(collapsed, type) => {
+              console.log(collapsed, type);
+            }}
+          >
+            <div className={styles.sideBarGutter} />
+            <Menu
+              // theme="dark"
+              defaultSelectedKeys={[location.pathname]}
+              selectedKeys={[location.pathname]}
+              mode="inline"
+              items={items}
+              onSelect={(info) => navigate(info.key)}
+            />
+          </Sider>
+        </div>
 
-      <Radio.Group value={location.pathname} onChange={switchTabs}>
-        <Radio.Button value="/">bills</Radio.Button>
-        <Radio.Button value="/members">members</Radio.Button>
-        <Radio.Button value="/invitations">invitations</Radio.Button>
-      </Radio.Group>
-      <div>{children}</div> */}
-      <AntDLayout style={{ minHeight: "100vh" }}>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            defaultSelectedKeys={["1"]}
-            selectedKeys={[location.pathname]}
-            mode="inline"
-            items={items}
-            onSelect={(info) => navigate(info.key)}
-          />
-        </Sider>
-        <AntDLayout className="site-layout">
-          <AntdHeader
-            className="site-layout-background"
-            style={{ padding: 0 }}
-          />
-          <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
+        <div className={styles.rightPanel}>
+          <Header />
+          <Content className="site-layout">
             <div
-              className="site-layout-background"
-              style={{ padding: 24, minHeight: 360 }}
+              className={`site-layout-background ${styles.contentContainer}`}
             >
-              Bill is a cat.
+              {children}
             </div>
           </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
-          </Footer>
-        </AntDLayout>
-      </AntDLayout>
+        </div>
+      </div>
     </>
   );
 };
