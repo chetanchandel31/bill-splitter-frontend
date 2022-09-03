@@ -78,11 +78,7 @@ const Members = () => {
           <Button
             onClick={showModal}
             type="primary"
-            loading={
-              isSelectedGroupLoading ||
-              isSelectedGroupFetching ||
-              isInviteSendLoading
-            }
+            loading={isSelectedGroupLoading || isInviteSendLoading}
             icon={<UsergroupAddOutlined />}
             disabled={!isAdmin(userInfo?.user._id ?? "")}
           >
