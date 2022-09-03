@@ -53,3 +53,7 @@
   background: #141414;
   border-color: #141414;
 }
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
