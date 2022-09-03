@@ -46,6 +46,8 @@ const useInviteSettle = ({ onError, onSuccess }: UseInviteSettleParams) => {
   >(settleInvite, {
     onSuccess: (data) => {
       queryClient.invalidateQueries(["invites-list"]);
+      queryClient.invalidateQueries(["groups-list"]);
+
       if (typeof onSuccess === "function") onSuccess(data);
     },
     onError,

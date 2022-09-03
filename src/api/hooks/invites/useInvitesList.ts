@@ -16,7 +16,7 @@ const listInvites = () => {
 
 const useInvitesList = ({ onError, onSuccess }: UseInvitesListParams) => {
   return useQuery<SuccessResponseUseInvitesList, AxiosErrorBillSplitter>(
-    ["invites-list", "groups-list"],
+    ["invites-list"],
     listInvites,
     {
       // enabled: false, // if uncommented only way to refetch would be via refetch function
