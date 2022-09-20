@@ -1,5 +1,5 @@
 import { useSelectedGroup } from "contexts/group-context";
-import AddExpenseBtn from "./AddExpenseBtn";
+import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 
 const ExpensesGroup = () => {
   const { selectedGroupDetails } = useSelectedGroup();

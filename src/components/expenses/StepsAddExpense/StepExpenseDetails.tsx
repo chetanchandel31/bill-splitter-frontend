@@ -1,4 +1,4 @@
-import styles from "../stepAddExpense.module.css";
+import styles from "./stepAddExpense.module.css";
 import { Alert, Input, Typography } from "antd";
 import { ChangeEventHandler } from "react";
 

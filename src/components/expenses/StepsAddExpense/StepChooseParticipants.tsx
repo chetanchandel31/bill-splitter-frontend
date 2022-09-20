@@ -1,4 +1,4 @@
-import styles from "../stepAddExpense.module.css";
+import styles from "./stepAddExpense.module.css";
 import { CrownOutlined } from "@ant-design/icons";
 import { Checkbox, Skeleton, Spin, Tag, Typography } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox/Checkbox";

@@ -5,8 +5,8 @@ import { useSelectedGroup } from "contexts/group-context";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
 import styles from "./stepAddExpense.module.css";
-import StepChooseParticipants from "./StepsAddExpense/StepChooseParticipants";
-import StepExpenseDetails from "./StepsAddExpense/StepExpenseDetails";
+import StepChooseParticipants from "./StepChooseParticipants";
+import StepExpenseDetails from "./StepExpenseDetails";
 
 const { Step } = Steps;
 
@@ -19,6 +19,8 @@ const AddExpenseBtn = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [expenseTitle, setExpenseTitle] = useState("");
   const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
+
+  // newExpenseMeta
 
   const { mutate: createExpense } = useExpenseCreate({
     onError: showErrorMessage,
