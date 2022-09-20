@@ -1,0 +1,10 @@
+.expenseDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 16px;
+}
+
+.alignCenter {
+  text-align: center;
+}

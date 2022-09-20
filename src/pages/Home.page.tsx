@@ -5,6 +5,7 @@ import { useSelectedGroup } from "contexts/group-context";
 import Layout from "helpers/Layout";
 import { useState } from "react";
 import { showErrorMessage } from "utils";
+import ExpensesGroup from "components/expenses/ExpensesGroup";
 
 const Home = () => {
   const [expenseTitle, setExpenseTitle] = useState("");
@@ -37,7 +38,7 @@ const Home = () => {
 
   return (
     <Layout>
-      <h2>expenses</h2>
+      <ExpensesGroup />
       <hr />
       {[
         ...(selectedGroupDetails?.admins || []),
