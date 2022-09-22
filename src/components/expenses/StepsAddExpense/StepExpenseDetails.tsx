@@ -30,9 +30,8 @@ const StepExpenseDetails = ({
 
   return (
     <div className={styles.expenseDetailsContainer}>
-      <div>
+      <div className={styles.expenseDetailsInfo}>
         <Alert
-          className={styles.expenseDetailsInfo}
           description="Only the person paying on behalf of other group members is supposed to
           fill this."
           type="info"
