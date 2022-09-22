@@ -1,24 +1,38 @@
-import styles from "./stepAddExpense.module.css";
 import { Alert, Input, Typography } from "antd";
-import { ChangeEventHandler } from "react";
+import { ChangeEvent, Dispatch } from "react";
+import { actionTypeNewExpenseMeta } from "./state/actions";
+import { NewExpenseMeta } from "./state/reducers";
+import styles from "./stepAddExpense.module.css";
 
 type PropsStepExpenseDetails = {
-  expenseTitle: string;
-  totalExpenseAmount: number;
-  onExpenseTitleChange: ChangeEventHandler<HTMLInputElement> | undefined;
-  onTotalExpenseAmountChange: ChangeEventHandler<HTMLInputElement> | undefined;
+  newExpenseMeta: NewExpenseMeta;
+  dispatch: Dispatch<actionTypeNewExpenseMeta>;
 };
 
 const StepExpenseDetails = ({
-  totalExpenseAmount,
-  expenseTitle,
-  onTotalExpenseAmountChange,
-  onExpenseTitleChange,
+  dispatch,
+  newExpenseMeta,
 }: PropsStepExpenseDetails) => {
+  const { expenseTitle, totalExpenseAmount } = newExpenseMeta;
+
+  const onExpenseTitleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: "SET_EXPENSE_TITLE", payload: target.value });
+  };
+
+  const onTotalExpenseAmountChange = ({
+    target,
+  }: ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: "SET_TOTAL_EXPENSE_AMOUNT",
+      payload: Number(target.value),
+    });
+  };
+
   return (
     <div className={styles.expenseDetailsContainer}>
       <div>
         <Alert
+          className={styles.expenseDetailsInfo}
           description="Only the person paying on behalf of other group members is supposed to
           fill this."
           type="info"

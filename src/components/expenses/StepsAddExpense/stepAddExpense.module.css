@@ -8,3 +8,11 @@
 .alignCenter {
   text-align: center;
 }
+
+.addExpenseBtnContainer {
+  text-align: right;
+}
+
+.expenseDetailsInfo {
+  margin-bottom: 24px;
+}

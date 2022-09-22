@@ -2,8 +2,12 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Alert, Button, message, Modal, Steps } from "antd";
 import useExpenseCreate from "api/hooks/expense/useExpenseCreate";
 import { useSelectedGroup } from "contexts/group-context";
-import { useState } from "react";
+import { useReducer } from "react";
 import { showErrorMessage } from "utils";
+import {
+  initialStateNewExpenseMeta,
+  reducerNewExpenseMeta,
+} from "./state/reducers";
 import styles from "./stepAddExpense.module.css";
 import StepChooseParticipants from "./StepChooseParticipants";
 import StepExpenseDetails from "./StepExpenseDetails";
@@ -15,28 +19,21 @@ const steps = ["Enter Expense details", "Choose participants"];
 const AddExpenseBtn = () => {
   const { selectedGroupDetails } = useSelectedGroup();
 
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [expenseTitle, setExpenseTitle] = useState("");
-  const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
+  const [newExpenseMeta, dispatch] = useReducer(
+    reducerNewExpenseMeta,
+    initialStateNewExpenseMeta
+  );
 
-  // newExpenseMeta
+  const { currentStep, expenseTitle, isModalVisible, totalExpenseAmount } =
+    newExpenseMeta;
 
   const { mutate: createExpense } = useExpenseCreate({
     onError: showErrorMessage,
     onSuccess: () => message.success("expense added successfully"),
   });
 
-  const showModal = () => {
-    setModalVisible(true);
-  };
-
-  const hideModal = () => {
-    setModalVisible(false);
-    setCurrentStep(0);
-    setExpenseTitle("");
-    setTotalExpenseAmount(0);
-  };
+  const showModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: true });
+  const hideModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: false });
 
   let isOkDisabled = false;
   let errorMessage;
@@ -48,7 +45,7 @@ const AddExpenseBtn = () => {
 
   return (
     <>
-      <div className={styles.alignCenter}>
+      <div className={styles.addExpenseBtnContainer}>
         <Button icon={<PlusOutlined />} onClick={showModal} type="primary">
           Add expense
         </Button>
@@ -59,7 +56,7 @@ const AddExpenseBtn = () => {
         visible={isModalVisible}
         onOk={() => {
           if (currentStep < steps.length - 1) {
-            setCurrentStep((prev) => prev + 1);
+            dispatch({ type: "INCREMENT_STEP" });
           } else {
             createExpense({
               expenseTitle,
@@ -83,18 +80,17 @@ const AddExpenseBtn = () => {
 
         {currentStep === 0 && (
           <StepExpenseDetails
-            totalExpenseAmount={totalExpenseAmount}
-            expenseTitle={expenseTitle}
-            onTotalExpenseAmountChange={({ target }) => {
-              if (Number(target.value) >= 0) {
-                setTotalExpenseAmount(Number(target.value));
-              }
-            }}
-            onExpenseTitleChange={({ target }) => setExpenseTitle(target.value)}
+            dispatch={dispatch}
+            newExpenseMeta={newExpenseMeta}
           />
         )}
 
-        {currentStep === 1 && <StepChooseParticipants />}
+        {currentStep === 1 && (
+          <StepChooseParticipants
+            dispatch={dispatch}
+            newExpenseMeta={newExpenseMeta}
+          />
+        )}
 
         {isOkDisabled && (
           <div className={styles.alignCenter}>

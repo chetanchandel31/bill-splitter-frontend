@@ -1,12 +1,22 @@
-import styles from "./stepAddExpense.module.css";
 import { CrownOutlined } from "@ant-design/icons";
 import { Checkbox, Skeleton, Spin, Tag, Typography } from "antd";
 import { CheckboxChangeEvent } from "antd/lib/checkbox/Checkbox";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
-import { useState } from "react";
+import { Dispatch } from "react";
+import { actionTypeNewExpenseMeta } from "./state/actions";
+import { NewExpenseMeta } from "./state/reducers";
+import styles from "./stepAddExpense.module.css";
 
-const StepChooseParticipants = () => {
+type StepChooseParticipantsProps = {
+  newExpenseMeta: NewExpenseMeta;
+  dispatch: Dispatch<actionTypeNewExpenseMeta>;
+};
+
+const StepChooseParticipants = ({
+  dispatch,
+  newExpenseMeta,
+}: StepChooseParticipantsProps) => {
   const { userInfo } = useAuth();
 
   const {
@@ -20,20 +30,16 @@ const StepChooseParticipants = () => {
     ...(selectedGroupDetails?.members || []),
   ];
 
+  const { selectedParticipantsId } = newExpenseMeta;
+
   const isAdmin = (userId: string) =>
     !!selectedGroupDetails?.admins.find((admin) => admin._id === userId);
 
-  const [selectedParticipantsId, setSelectedParticipantsId] = useState<
-    string[]
-  >([]);
-
   const handleChange = (e: CheckboxChangeEvent, participantId: string) => {
     if (e.target.checked) {
-      setSelectedParticipantsId((prev) => [...prev, participantId]);
+      dispatch({ type: "SELECT_PARTICIPANT", payload: { participantId } });
     } else {
-      setSelectedParticipantsId((prev) =>
-        prev.filter((_participantId) => _participantId !== participantId)
-      );
+      dispatch({ type: "UNSELECT_PARTICIPANT", payload: { participantId } });
     }
   };
 
