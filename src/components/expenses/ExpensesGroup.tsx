@@ -9,14 +9,16 @@ const { Panel } = Collapse;
 const ExpensesGroup = () => {
   const { isSelectedGroupLoading, selectedGroupDetails } = useSelectedGroup();
 
+  const totalParticipants = [
+    ...(selectedGroupDetails?.admins || []),
+    ...(selectedGroupDetails?.members || []),
+  ];
+
   const expenses = selectedGroupDetails?.expenses;
   let expenseList;
 
   const getParticipantDetails = (participantId: string) =>
-    [
-      ...(selectedGroupDetails?.admins || []),
-      ...(selectedGroupDetails?.members || []),
-    ].find((participant) => participant._id === participantId);
+    totalParticipants.find((participant) => participant._id === participantId);
 
   if (isSelectedGroupLoading) {
     expenseList = <Skeleton paragraph={{ rows: 4 }} />;
@@ -79,7 +81,11 @@ const ExpensesGroup = () => {
       </Collapse>
     );
   } else {
-    expenseList = <Empty />;
+    expenseList = (
+      <div className={styles.expensesGroupEmptyState}>
+        <Empty />
+      </div>
+    );
   }
 
   return (

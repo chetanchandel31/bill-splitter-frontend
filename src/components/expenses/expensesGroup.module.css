@@ -11,3 +11,7 @@
   align-items: center;
   gap: 16px;
 }
+
+.expensesGroupEmptyState {
+  margin: 64px 0;
+}
