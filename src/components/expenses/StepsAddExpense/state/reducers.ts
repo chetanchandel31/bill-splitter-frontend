@@ -8,7 +8,7 @@ export type NewExpenseMeta = {
   selectedParticipantsId: string[];
 };
 
-export const initialStateNewExpenseMeta: NewExpenseMeta = {
+export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
   isModalVisible: false,
   currentStep: 0,
   expenseTitle: "",
@@ -24,13 +24,7 @@ export const reducerNewExpenseMeta = (
     case "DO_SHOW_MODAL": {
       return action.payload
         ? { ...state, isModalVisible: true }
-        : {
-            ...state,
-            isModalVisible: false,
-            currentStep: 0,
-            expenseTitle: "",
-            totalExpenseAmount: 0,
-          };
+        : initialStateNewExpenseMeta;
     }
 
     case "INCREMENT_STEP": {

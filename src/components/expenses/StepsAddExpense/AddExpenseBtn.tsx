@@ -43,6 +43,28 @@ const AddExpenseBtn = () => {
     errorMessage = "Please enter both expense title and expense amount";
   }
 
+  const handleOk = () => {
+    if (currentStep < steps.length - 1) {
+      dispatch({ type: "INCREMENT_STEP" });
+    } else {
+      const { selectedParticipantsId } = newExpenseMeta;
+      const perParticipantExpenseAmount =
+        totalExpenseAmount / selectedParticipantsId.length;
+
+      createExpense({
+        expenseTitle,
+        groupId: selectedGroupDetails?._id ?? "",
+        amountPaidForOwnExpense: perParticipantExpenseAmount,
+        borrowers: selectedParticipantsId.map((id) => ({
+          amountBorrowed: perParticipantExpenseAmount,
+          user: id,
+        })),
+      });
+
+      hideModal();
+    }
+  };
+
   return (
     <>
       <div className={styles.addExpenseBtnContainer}>
@@ -54,19 +76,7 @@ const AddExpenseBtn = () => {
       <Modal
         title="Add new expense"
         visible={isModalVisible}
-        onOk={() => {
-          if (currentStep < steps.length - 1) {
-            dispatch({ type: "INCREMENT_STEP" });
-          } else {
-            createExpense({
-              expenseTitle,
-              groupId: selectedGroupDetails?._id ?? "",
-              amountPaidForOwnExpense: 11,
-              borrowers: [],
-            });
-            hideModal();
-          }
-        }}
+        onOk={handleOk}
         okButtonProps={{ disabled: isOkDisabled }}
         onCancel={hideModal}
         okText={currentStep < steps.length - 1 ? "Next" : "Create new expense"}

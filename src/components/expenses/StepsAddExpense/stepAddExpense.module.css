@@ -11,6 +11,7 @@
 
 .addExpenseBtnContainer {
   text-align: right;
+  margin-bottom: 24px;
 }
 
 .expenseDetailsInfo {

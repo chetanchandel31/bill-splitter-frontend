@@ -15,7 +15,7 @@ type PayloadExpenseCreate = {
   groupId: string;
   expenseTitle: string;
   amountPaidForOwnExpense: number;
-  borrowers: { userId: string; amountBorrowed: number }[];
+  borrowers: { user: string; amountBorrowed: number }[];
 };
 
 type UseExpenseCreateParams = {

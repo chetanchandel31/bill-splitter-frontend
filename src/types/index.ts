@@ -26,6 +26,7 @@ export type Expense = {
     isApprovedByLender: boolean;
     isSettled: boolean;
     _id: string;
+    user: string;
   }[];
   expenseTitle: string;
   lender: {
