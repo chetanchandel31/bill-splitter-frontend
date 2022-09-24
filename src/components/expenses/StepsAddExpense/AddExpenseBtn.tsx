@@ -41,6 +41,13 @@ const AddExpenseBtn = () => {
   if (currentStep === 0 && (!expenseTitle || !totalExpenseAmount)) {
     isOkDisabled = true;
     errorMessage = "Please enter both expense title and expense amount";
+  } else if (
+    currentStep === 1 &&
+    newExpenseMeta.selectedParticipantsId.length < 1
+  ) {
+    isOkDisabled = true;
+    errorMessage =
+      "You need to have atleast one participant other than yourself";
   }
 
   const handleOk = () => {
