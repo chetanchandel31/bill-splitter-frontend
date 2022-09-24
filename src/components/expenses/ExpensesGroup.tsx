@@ -1,6 +1,6 @@
 import { Collapse, Divider, Empty, Skeleton } from "antd";
 import { useSelectedGroup } from "contexts/group-context";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import styles from "./expensesGroup.module.css";
 import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 
@@ -14,17 +14,30 @@ const ExpensesGroup = () => {
     ...(selectedGroupDetails?.members || []),
   ];
 
-  const expenses = selectedGroupDetails?.expenses;
-  let expenseList;
+  const [expandedExpenses, setExpandedExpenses] = useState<string[]>([]);
+
+  const onChange = (key: string | string[]) => {
+    if (typeof key === "string") {
+      setExpandedExpenses((prev) => [...prev, key]);
+    } else {
+      setExpandedExpenses(key);
+    }
+  };
 
   const getParticipantDetails = (participantId: string) =>
     totalParticipants.find((participant) => participant._id === participantId);
+
+  const expenses = selectedGroupDetails?.expenses;
+  let expenseList;
 
   if (isSelectedGroupLoading) {
     expenseList = <Skeleton paragraph={{ rows: 4 }} />;
   } else if (expenses?.length) {
     expenseList = (
-      <Collapse className={`site-collapse-custom-collapse ${styles.collapse}`}>
+      <Collapse
+        className={`site-collapse-custom-collapse ${styles.collapse}`}
+        onChange={onChange}
+      >
         {selectedGroupDetails?.expenses.map((expense) => {
           const totalExpenseAmount = expense.borrowers.reduce(
             (prevVal, currentVal) => prevVal + currentVal.amountBorrowed,
@@ -43,7 +56,10 @@ const ExpensesGroup = () => {
                       <div>{new Date(expense.recordedAt).toLocaleString()}</div>
                     </small>
                   </div>
-                  <span>₹{totalExpenseAmount}</span>
+
+                  {!expandedExpenses.includes(expense._id) && (
+                    <span>₹{totalExpenseAmount}</span>
+                  )}
                 </div>
               }
               key={expense._id}
