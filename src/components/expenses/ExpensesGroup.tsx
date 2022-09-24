@@ -24,7 +24,7 @@ const ExpensesGroup = () => {
     expenseList = <Skeleton paragraph={{ rows: 4 }} />;
   } else if (expenses?.length) {
     expenseList = (
-      <Collapse className={styles.collapse}>
+      <Collapse className={`site-collapse-custom-collapse ${styles.collapse}`}>
         {selectedGroupDetails?.expenses.map((expense) => {
           const totalExpenseAmount = expense.borrowers.reduce(
             (prevVal, currentVal) => prevVal + currentVal.amountBorrowed,
