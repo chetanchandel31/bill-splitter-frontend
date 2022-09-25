@@ -78,8 +78,11 @@ const ExpensesGroup = () => {
                   <strong>Amount</strong>
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
+
                 <div className={styles.expensePanelItem}>
-                  {getParticipantDetails(expense.lender.user)?.name}
+                  <span>
+                    {getParticipantDetails(expense.lender.user)?.name}
+                  </span>
                   <span>₹{expense.lender.amountPaidForOwnExpense}</span>
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
@@ -87,7 +90,7 @@ const ExpensesGroup = () => {
                 {expense.borrowers.map((borrower) => (
                   <Fragment key={borrower._id}>
                     <div className={styles.expensePanelItem}>
-                      {getParticipantDetails(borrower.user)?.name}
+                      <span>{getParticipantDetails(borrower.user)?.name}</span>
                       <span>₹{borrower.amountBorrowed}</span>
                     </div>
                     <Divider style={{ margin: "8px 0" }} />

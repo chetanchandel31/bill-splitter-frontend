@@ -50,7 +50,7 @@ const StepExpenseDetails = ({
       </div>
 
       <div>
-        <Typography>How much did the entire expense cost you?</Typography>
+        <Typography>How much did the entire expense cost?</Typography>
         <Input
           placeholder="Total Expense Amount"
           onChange={onTotalExpenseAmountChange}

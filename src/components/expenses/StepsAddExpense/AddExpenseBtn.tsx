@@ -4,6 +4,7 @@ import useExpenseCreate from "api/hooks/expense/useExpenseCreate";
 import { useSelectedGroup } from "contexts/group-context";
 import { useReducer } from "react";
 import { showErrorMessage } from "utils";
+import ExpensesGroupTotal from "../ExpensesGroupTotal";
 import {
   initialStateNewExpenseMeta,
   reducerNewExpenseMeta,
@@ -78,6 +79,8 @@ const AddExpenseBtn = () => {
         <Button icon={<PlusOutlined />} onClick={showModal} type="primary">
           Add expense
         </Button>
+
+        <ExpensesGroupTotal />
       </div>
 
       <Modal
@@ -110,7 +113,7 @@ const AddExpenseBtn = () => {
         )}
 
         {isOkDisabled && (
-          <div className={styles.alignCenter}>
+          <div className={styles.newExpenseError}>
             <Alert message={errorMessage} type="error" />
           </div>
         )}
