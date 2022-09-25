@@ -1,5 +1,6 @@
-import { Collapse, Divider, Empty, Skeleton } from "antd";
+import { Collapse, Divider, Empty, Skeleton, Typography } from "antd";
 import { useSelectedGroup } from "contexts/group-context";
+import moment from "moment";
 import { Fragment, useState } from "react";
 import styles from "./expensesGroup.module.css";
 import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
@@ -44,6 +45,8 @@ const ExpensesGroup = () => {
             expense.lender.amountPaidForOwnExpense
           );
 
+          const recordedAt = Number(expense.recordedAt.toString().slice(0, -3));
+
           return (
             <Panel
               className="site-collapse-custom-panel"
@@ -51,10 +54,15 @@ const ExpensesGroup = () => {
                 <div className={styles.expensePanelHeader}>
                   <div>
                     <strong>{expense.expenseTitle}</strong>
-                    <small>
-                      {/* TODO: better formatting and tooltip */}
-                      <div>{new Date(expense.recordedAt).toLocaleString()}</div>
-                    </small>
+                    <div>
+                      <Typography.Text type="secondary">
+                        <small>
+                          {moment
+                            .unix(recordedAt)
+                            .format("MMMM Do YYYY, h:mm a")}
+                        </small>
+                      </Typography.Text>
+                    </div>
                   </div>
 
                   {!expandedExpenses.includes(expense._id) && (
