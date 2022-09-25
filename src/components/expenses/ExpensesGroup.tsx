@@ -1,4 +1,12 @@
-import { Collapse, Divider, Empty, Skeleton, Typography } from "antd";
+import {
+  Collapse,
+  Divider,
+  Empty,
+  Skeleton,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { Fragment, useState } from "react";
@@ -80,26 +88,62 @@ const ExpensesGroup = () => {
                 <Divider style={{ margin: "8px 0" }} />
 
                 <div className={styles.expensePanelItem}>
-                  <span>
-                    {getParticipantDetails(expense.lender.user)?.name}
-                  </span>
-                  <span>₹{expense.lender.amountPaidForOwnExpense}</span>
+                  <Typography.Text type="success">
+                    {getParticipantDetails(expense.lender.user)?.name}{" "}
+                    <Tag color="success">Lender</Tag>
+                  </Typography.Text>
+                  <Typography.Text type="success">
+                    ₹{expense.lender.amountPaidForOwnExpense}
+                  </Typography.Text>
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
 
-                {expense.borrowers.map((borrower) => (
-                  <Fragment key={borrower._id}>
-                    <div className={styles.expensePanelItem}>
-                      <span>{getParticipantDetails(borrower.user)?.name}</span>
-                      <span>₹{borrower.amountBorrowed}</span>
-                    </div>
-                    <Divider style={{ margin: "8px 0" }} />
-                  </Fragment>
-                ))}
+                {expense.borrowers.map((borrower) => {
+                  let textColor: "danger" | "success" | "warning" = "danger";
+                  let expenseStatus = "Unsettled";
+                  let tagColor: "error" | "success" | "warning" = "error";
+                  let tooltipContent =
+                    "The borrowed amount hasn't been paid back yet";
+
+                  if (borrower.isApprovedByLender) {
+                    textColor = "success";
+                    expenseStatus = "Settled";
+                    tagColor = "success";
+                    tooltipContent = "the borrowed amount has been paid back";
+                  } else if (borrower.isSettled) {
+                    textColor = "warning";
+                    expenseStatus = "Settlement pending";
+                    tagColor = "warning";
+                    tooltipContent =
+                      "Lender hasn't approved the settlement of this expense yet";
+                  }
+
+                  return (
+                    <Fragment key={borrower._id}>
+                      <div className={styles.expensePanelItem}>
+                        <Typography.Text type={textColor}>
+                          {getParticipantDetails(borrower.user)?.name}
+                        </Typography.Text>
+                        <Typography.Text type="danger">
+                          <Tooltip title={tooltipContent} placement="left">
+                            <Tag
+                              color={tagColor}
+                              style={{ userSelect: "none" }}
+                            >
+                              {expenseStatus}
+                            </Tag>
+                          </Tooltip>{" "}
+                          + ₹{borrower.amountBorrowed}
+                        </Typography.Text>
+                      </div>
+                      <Divider style={{ margin: "8px 0" }} />
+                    </Fragment>
+                  );
+                })}
 
                 <div className={styles.expensePanelItem}>
                   <strong>Total</strong>
-                  <strong>₹{totalExpenseAmount}</strong>
+                  <strong>= ₹{totalExpenseAmount}</strong>
                 </div>
               </p>
             </Panel>
