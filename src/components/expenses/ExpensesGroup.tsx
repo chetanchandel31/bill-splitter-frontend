@@ -79,7 +79,7 @@ const ExpensesGroup = () => {
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
                 <div className={styles.expensePanelItem}>
-                  {getParticipantDetails(expense.lender.user)?.name}:{" "}
+                  {getParticipantDetails(expense.lender.user)?.name}
                   <span>₹{expense.lender.amountPaidForOwnExpense}</span>
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
@@ -87,7 +87,7 @@ const ExpensesGroup = () => {
                 {expense.borrowers.map((borrower) => (
                   <Fragment key={borrower._id}>
                     <div className={styles.expensePanelItem}>
-                      {getParticipantDetails(borrower.user)?.name}:{" "}
+                      {getParticipantDetails(borrower.user)?.name}
                       <span>₹{borrower.amountBorrowed}</span>
                     </div>
                     <Divider style={{ margin: "8px 0" }} />

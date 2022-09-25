@@ -56,7 +56,7 @@ const StepChooseParticipants = ({
           const isChecked = selectedParticipantsId.includes(participant._id);
 
           return (
-            <div key={participant._id}>
+            <div className={styles.participantCheckbox} key={participant._id}>
               <Checkbox
                 checked={isChecked || isSignedInUser}
                 disabled={isSignedInUser}
@@ -81,12 +81,11 @@ const StepChooseParticipants = ({
 
   return (
     <div className={styles.expenseDetailsContainer}>
-      <Typography>
+      <Typography.Title level={5}>
         Please select the group members involved in this expense:
-      </Typography>
+      </Typography.Title>
 
       {participantsList}
-      <pre>{JSON.stringify(selectedGroupDetails, null, 2)}</pre>
     </div>
   );
 };
