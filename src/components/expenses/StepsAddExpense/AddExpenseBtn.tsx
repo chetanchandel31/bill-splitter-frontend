@@ -17,6 +17,8 @@ const { Step } = Steps;
 
 const steps = ["Enter Expense details", "Choose participants"];
 
+// TODO: 1. expense name and choose participants 2. total expense amount & mode of distribution
+
 const AddExpenseBtn = () => {
   const { selectedGroupDetails } = useSelectedGroup();
 

@@ -5,6 +5,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import {
+  Alert,
   Button,
   Input,
   List,
@@ -70,7 +71,7 @@ const Members = () => {
       <div style={{ textAlign: "right", margin: "24px 0" }}>
         <Tooltip
           title={
-            !isAdmin(userInfo?.user._id ?? "")
+            !isAdmin(userInfo?.user._id ?? "") && !isSelectedGroupLoading
               ? "Only admin can invite members to group"
               : undefined
           }
@@ -131,20 +132,26 @@ const Members = () => {
         okText="Send invite"
         cancelText="Cancel"
       >
+        <Alert
+          className={styles.inviteInfo}
+          description="Each user has unique user name, admins can use it to invite people
+          to group."
+          type="info"
+          showIcon
+          closable
+        />
+
         <Input
+          autoFocus
           onPressEnter={() => {
             if (newMemberName) {
               addNewMember();
             }
           }}
-          placeholder="username(case-sensitive) e.g. Joe Biden"
+          placeholder="username(case-sensitive) e.g. Jack Sparrow"
           onChange={({ target }) => setNewMemberName(target.value)}
           value={newMemberName}
         />
-        <Typography.Text className={styles.inviteInfo} italic type="warning">
-          * each user has unique user name, admins can use it to invite people
-          to group
-        </Typography.Text>
       </Modal>
     </Layout>
   );
