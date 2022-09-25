@@ -7,6 +7,7 @@ import {
   Tooltip,
   Typography,
 } from "antd";
+import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { Fragment, useState } from "react";
@@ -16,6 +17,7 @@ import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 const { Panel } = Collapse;
 
 const ExpensesGroup = () => {
+  const { userInfo } = useAuth();
   const { isSelectedGroupLoading, selectedGroupDetails } = useSelectedGroup();
 
   const totalParticipants = [
@@ -90,7 +92,12 @@ const ExpensesGroup = () => {
                 <div className={styles.expensePanelItem}>
                   <Typography.Text type="success">
                     {getParticipantDetails(expense.lender.user)?.name}{" "}
-                    <Tag color="success">Lender</Tag>
+                    <Tag color="success" style={{ userSelect: "none" }}>
+                      Lender
+                    </Tag>
+                    {expense.lender.user === userInfo?.user._id && (
+                      <Tag style={{ userSelect: "none" }}>(You)</Tag>
+                    )}
                   </Typography.Text>
                   <Typography.Text type="success">
                     ₹{expense.lender.amountPaidForOwnExpense}
@@ -122,7 +129,10 @@ const ExpensesGroup = () => {
                     <Fragment key={borrower._id}>
                       <div className={styles.expensePanelItem}>
                         <Typography.Text type={textColor}>
-                          {getParticipantDetails(borrower.user)?.name}
+                          {getParticipantDetails(borrower.user)?.name}{" "}
+                          {borrower.user === userInfo?.user._id && (
+                            <Tag style={{ userSelect: "none" }}>(You)</Tag>
+                          )}
                         </Typography.Text>
                         <Typography.Text type="danger">
                           <Tooltip title={tooltipContent} placement="left">
