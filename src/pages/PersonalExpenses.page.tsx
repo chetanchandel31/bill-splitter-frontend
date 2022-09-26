@@ -3,6 +3,7 @@ import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import Layout from "helpers/Layout";
 import { Expense } from "types";
+import styles from "./personalExpenses.module.css";
 
 const PersonalExpenses = () => {
   const { userInfo } = useAuth();
@@ -51,12 +52,12 @@ const PersonalExpenses = () => {
 
   return (
     <Layout>
-      <div style={{ textAlign: "center", marginBottom: "16px" }}>
-        <Typography.Title level={4}>Your personal expenses</Typography.Title>
+      <div className={styles.personalExpenseHeading}>
+        <Typography.Title level={4}>Your Personal Expenses</Typography.Title>
       </div>
 
-      <Row gutter={16}>
-        <Col span={12}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} md={12}>
           <Card>
             <Spin spinning={isSelectedGroupFetching}>
               <Statistic
@@ -70,7 +71,7 @@ const PersonalExpenses = () => {
             </Spin>
           </Card>
         </Col>
-        <Col span={12}>
+        <Col xs={24} md={12}>
           <Card>
             <Spin spinning={isSelectedGroupFetching}>
               <Statistic
@@ -86,7 +87,11 @@ const PersonalExpenses = () => {
         </Col>
       </Row>
 
-      <Tabs centered defaultActiveKey="1">
+      <Tabs
+        centered
+        className={styles.personalExpensesTabs}
+        defaultActiveKey="1"
+      >
         <Tabs.TabPane tab="Amount to be received" key="1">
           Amount to be received
         </Tabs.TabPane>
