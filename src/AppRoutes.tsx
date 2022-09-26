@@ -8,6 +8,7 @@ import GroupSelection from "pages/GroupSelection.page";
 import Home from "pages/Home.page";
 import Invitations from "pages/Invitations.page";
 import Members from "pages/Members.page";
+import PersonalExpenses from "pages/PersonalExpenses.page";
 import SignIn from "pages/SignIn.page";
 import SignUp from "pages/SignUp.page";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -28,6 +29,14 @@ function AppRoutes() {
                 element={
                   <ProtectedRoute>
                     <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/personal-expenses"
+                element={
+                  <ProtectedRoute>
+                    <PersonalExpenses />
                   </ProtectedRoute>
                 }
               />

@@ -59,7 +59,7 @@ const AddExpenseBtn = () => {
     } else {
       const { selectedParticipantsId } = newExpenseMeta;
       const perParticipantExpenseAmount =
-        totalExpenseAmount / selectedParticipantsId.length;
+        totalExpenseAmount / (selectedParticipantsId.length + 1);
 
       createExpense({
         expenseTitle,
