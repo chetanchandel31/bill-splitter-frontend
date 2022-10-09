@@ -1,14 +1,18 @@
 import { Card, Col, Row, Spin, Statistic, Tabs, Typography } from "antd";
+import TabAmountToReceive from "components/expenses-personal/TabAmountToReceive";
+import TabAmountToReturn from "components/expenses-personal/TabAmountToReturn";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import Layout from "helpers/Layout";
 import { Expense } from "types";
+import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 import styles from "./personalExpenses.module.css";
 
 const PersonalExpenses = () => {
   const { userInfo } = useAuth();
   const { selectedGroupDetails, isSelectedGroupFetching } = useSelectedGroup();
 
+  // total amount to receive
   const getTotalAmountToBeReceived = (expenses: Expense[]): number => {
     let amountToBeReceived = 0;
 
@@ -29,6 +33,7 @@ const PersonalExpenses = () => {
     ? getTotalAmountToBeReceived(selectedGroupDetails?.expenses)
     : 0;
 
+  // total amount to return
   const getTotalAmountToBeReturned = (expenses: Expense[]): number => {
     let amountToBeReturned = 0;
 
@@ -63,8 +68,9 @@ const PersonalExpenses = () => {
               <Statistic
                 title="Amount you have to receive from others"
                 precision={2}
-                prefix="₹"
-                value={amountToBeReceived}
+                value={getFormattedCurrencyString({
+                  amount: amountToBeReceived,
+                })}
                 valueStyle={{ color: "#3f8600" }}
                 // prefix={<ArrowUpOutlined />}
               />
@@ -77,8 +83,9 @@ const PersonalExpenses = () => {
               <Statistic
                 title="Amount you have to return to others"
                 precision={2}
-                prefix="₹"
-                value={amountToBeReturned}
+                value={getFormattedCurrencyString({
+                  amount: amountToBeReturned,
+                })}
                 valueStyle={{ color: "#cf1322" }}
                 // prefix={<ArrowDownOutlined />}
               />
@@ -93,14 +100,12 @@ const PersonalExpenses = () => {
         defaultActiveKey="1"
       >
         <Tabs.TabPane tab="Amount to be received" key="1">
-          Amount to be received
+          <TabAmountToReceive />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Amount to be returned" key="2">
-          Amount to be returned
+          <TabAmountToReturn />
         </Tabs.TabPane>
       </Tabs>
-
-      <pre>{JSON.stringify(selectedGroupDetails?.expenses, null, 2)}</pre>
     </Layout>
   );
 };
