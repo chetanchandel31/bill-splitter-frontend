@@ -83,7 +83,7 @@ const InvitationsList = () => {
                   title={
                     <>
                       <strong>Invitation to: </strong>
-                      {invite.invitedTo.groupName}
+                      {invite?.invitedTo?.groupName}
                     </>
                   }
                   description={
@@ -92,7 +92,7 @@ const InvitationsList = () => {
                         {invite.invitedBy.name} ({invite.invitedBy.email})
                       </strong>{" "}
                       is inviting you to join the group named
-                      <strong> {invite.invitedTo.groupName}</strong>
+                      <strong> {invite?.invitedTo?.groupName}</strong>
                     </>
                   }
                 />

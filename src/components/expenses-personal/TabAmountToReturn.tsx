@@ -4,11 +4,10 @@ import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { ReactNode } from "react";
-import { Expense } from "types";
 import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 
-// what data will be used to render a single row
+// what data will be used to render a single row, just focus on making all necessary data available, formatting can happen later
 type DataType = {
   key: string;
   expense: string;
@@ -38,7 +37,7 @@ const columns: ColumnsType<DataType> = [
     render: (text) => <>{text}</>,
   },
   {
-    title: "Amount",
+    title: "Amount Borrowed",
     dataIndex: "amount",
     key: "amount",
     render: (text, record) => (
@@ -69,7 +68,7 @@ const TabAmountToReturn = () => {
   } = useSelectedGroup();
 
   // filter out from total expenses array
-  const relevantExpenses: Expense[] = [];
+  const tableData: DataType[] = [];
 
   selectedGroupDetails?.expenses.forEach((expense) => {
     expense.borrowers.forEach((borrower) => {
@@ -77,7 +76,21 @@ const TabAmountToReturn = () => {
         borrower.user === userInfo?.user._id &&
         !borrower.isApprovedByLender
       ) {
-        relevantExpenses.push(expense);
+        const amount = borrower?.amountBorrowed ?? 0;
+
+        const lenderDetails = getParticipantDetails({
+          participantId: expense.lender.user,
+          selectedGroupDetails,
+        });
+        const lender = `${lenderDetails?.name} (${lenderDetails?.email})`;
+
+        tableData.push({
+          amount,
+          expense: expense.expenseTitle,
+          key: borrower._id,
+          lender,
+          recordedAt: expense.recordedAt,
+        });
       }
     });
   });
@@ -88,27 +101,6 @@ const TabAmountToReturn = () => {
   if (isSelectedGroupLoading) {
     list = <Skeleton paragraph={{ rows: 4 }} />;
   } else {
-    const tableData: DataType[] = relevantExpenses.map((expense) => {
-      const lenderDetails = getParticipantDetails({
-        participantId: expense.lender.user,
-        selectedGroupDetails,
-      });
-      const lender = `${lenderDetails?.name} (${lenderDetails?.email})`;
-
-      const amount =
-        expense.borrowers.find(
-          (borrower) => borrower.user === userInfo?.user._id
-        )?.amountBorrowed ?? 0;
-
-      return {
-        amount,
-        expense: expense.expenseTitle,
-        key: expense._id,
-        lender,
-        recordedAt: expense.recordedAt,
-      };
-    });
-
     list = (
       <Spin spinning={isSelectedGroupFetching}>
         <Table columns={columns} dataSource={tableData} />
