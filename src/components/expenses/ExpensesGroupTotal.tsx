@@ -1,6 +1,7 @@
 import { Statistic } from "antd";
 import { useSelectedGroup } from "contexts/group-context";
 import { Expense } from "types";
+import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 
 const ExpensesGroupTotal = () => {
   const { selectedGroupDetails } = useSelectedGroup();
@@ -22,12 +23,15 @@ const ExpensesGroupTotal = () => {
     return totalExpense;
   };
 
+  const groupExpenseTotal = getGroupExpenseTotal(
+    selectedGroupDetails?.expenses ?? []
+  );
+
   return selectedGroupDetails?.expenses ? (
     <Statistic
       style={{ textAlign: "right" }}
-      prefix="₹"
       title="Group's total expense"
-      value={getGroupExpenseTotal(selectedGroupDetails?.expenses)}
+      value={getFormattedCurrencyString({ amount: groupExpenseTotal })}
     />
   ) : null;
 };

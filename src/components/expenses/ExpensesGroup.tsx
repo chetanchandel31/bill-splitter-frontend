@@ -11,6 +11,8 @@ import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { Fragment, useState } from "react";
+import { getParticipantDetails } from "utils";
+import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 import styles from "./expensesGroup.module.css";
 import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 
@@ -19,11 +21,6 @@ const { Panel } = Collapse;
 const ExpensesGroup = () => {
   const { userInfo } = useAuth();
   const { isSelectedGroupLoading, selectedGroupDetails } = useSelectedGroup();
-
-  const totalParticipants = [
-    ...(selectedGroupDetails?.admins || []),
-    ...(selectedGroupDetails?.members || []),
-  ];
 
   const [expandedExpenses, setExpandedExpenses] = useState<string[]>([]);
 
@@ -34,9 +31,6 @@ const ExpensesGroup = () => {
       setExpandedExpenses(key);
     }
   };
-
-  const getParticipantDetails = (participantId: string) =>
-    totalParticipants.find((participant) => participant._id === participantId);
 
   const expenses = selectedGroupDetails?.expenses;
   let expenseList;
@@ -57,6 +51,11 @@ const ExpensesGroup = () => {
 
           const recordedAt = Number(expense.recordedAt.toString().slice(0, -3));
 
+          const lenderName = getParticipantDetails({
+            participantId: expense.lender.user,
+            selectedGroupDetails,
+          })?.name;
+
           return (
             <Panel
               className="site-collapse-custom-panel"
@@ -76,7 +75,11 @@ const ExpensesGroup = () => {
                   </div>
 
                   {!expandedExpenses.includes(expense._id) && (
-                    <span>₹{totalExpenseAmount}</span>
+                    <span>
+                      {getFormattedCurrencyString({
+                        amount: totalExpenseAmount,
+                      })}
+                    </span>
                   )}
                 </div>
               }
@@ -91,7 +94,7 @@ const ExpensesGroup = () => {
 
                 <div className={styles.expensePanelItem}>
                   <Typography.Text type="success">
-                    {getParticipantDetails(expense.lender.user)?.name}{" "}
+                    {lenderName}{" "}
                     <Tag color="success" style={{ userSelect: "none" }}>
                       Lender
                     </Tag>
@@ -100,7 +103,9 @@ const ExpensesGroup = () => {
                     )}
                   </Typography.Text>
                   <Typography.Text type="success">
-                    ₹{expense.lender.amountPaidForOwnExpense}
+                    {getFormattedCurrencyString({
+                      amount: expense.lender.amountPaidForOwnExpense,
+                    })}
                   </Typography.Text>
                 </div>
                 <Divider style={{ margin: "8px 0" }} />
@@ -125,11 +130,16 @@ const ExpensesGroup = () => {
                       "Lender hasn't approved the settlement of this expense yet";
                   }
 
+                  const borrowerName = getParticipantDetails({
+                    participantId: borrower.user,
+                    selectedGroupDetails,
+                  })?.name;
+
                   return (
                     <Fragment key={borrower._id}>
                       <div className={styles.expensePanelItem}>
                         <Typography.Text type={textColor}>
-                          {getParticipantDetails(borrower.user)?.name}{" "}
+                          {borrowerName}{" "}
                           {borrower.user === userInfo?.user._id && (
                             <Tag style={{ userSelect: "none" }}>(You)</Tag>
                           )}
@@ -143,7 +153,10 @@ const ExpensesGroup = () => {
                               {expenseStatus}
                             </Tag>
                           </Tooltip>{" "}
-                          + ₹{borrower.amountBorrowed}
+                          +
+                          {getFormattedCurrencyString({
+                            amount: borrower.amountBorrowed,
+                          })}
                         </Typography.Text>
                       </div>
                       <Divider style={{ margin: "8px 0" }} />
@@ -153,7 +166,10 @@ const ExpensesGroup = () => {
 
                 <div className={styles.expensePanelItem}>
                   <strong>Total</strong>
-                  <strong>= ₹{totalExpenseAmount}</strong>
+                  <strong>
+                    =
+                    {getFormattedCurrencyString({ amount: totalExpenseAmount })}
+                  </strong>
                 </div>
               </p>
             </Panel>
