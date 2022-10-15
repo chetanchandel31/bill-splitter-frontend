@@ -37,6 +37,8 @@ export type Expense = {
   _id: string;
 };
 
+export type Borrower = Expense["borrowers"][0];
+
 export type GroupWithMemberDetails = {
   groupName: string;
   admins: User[];

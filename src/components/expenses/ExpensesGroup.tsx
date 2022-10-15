@@ -121,7 +121,7 @@ const ExpensesGroup = () => {
                     textColor = "success";
                     expenseStatus = "Settled";
                     tagColor = "success";
-                    tooltipContent = "the borrowed amount has been paid back";
+                    tooltipContent = "The borrowed amount has been paid back";
                   } else if (borrower.isSettled) {
                     textColor = "warning";
                     expenseStatus = "Settlement pending";

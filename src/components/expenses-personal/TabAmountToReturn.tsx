@@ -1,11 +1,15 @@
-import { Button, Skeleton, Space, Spin, Table, Typography } from "antd";
+import { CheckOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import { Button, Modal, Skeleton, Space, Spin, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import Tooltip from "antd/es/tooltip";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { ReactNode } from "react";
+import { Borrower } from "types";
 import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
+import AmountToReturnStatus from "./helpers/AmountToReturnStatus";
 
 // what data will be used to render a single row, just focus on making all necessary data available, formatting can happen later
 type DataType = {
@@ -14,6 +18,27 @@ type DataType = {
   lender: string;
   amount: number;
   recordedAt: number;
+  borrower: Borrower;
+};
+
+const handleConfirm = (record: DataType) => {
+  Modal.confirm({
+    title: "Are you sure?",
+    icon: <ExclamationCircleOutlined />,
+    content: (
+      <>
+        You are claiming that you have returned{" "}
+        <strong>{getFormattedCurrencyString({ amount: record.amount })}</strong>{" "}
+        back to <strong>{record.lender}</strong> for the expense{" "}
+        <strong>{record.expense}</strong> ?
+      </>
+    ),
+    okText: "Yes",
+    cancelText: "No",
+    onOk: () => {
+      console.log("fire api call 🚀");
+    },
+  });
 };
 
 const columns: ColumnsType<DataType> = [
@@ -45,14 +70,24 @@ const columns: ColumnsType<DataType> = [
     ),
   },
   {
-    title: "Action",
+    title: "Status",
+    key: "status",
+    render: (_, record) => <AmountToReturnStatus borrower={record.borrower} />,
+  },
+  {
+    title: "",
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        {/* TODO: make something useful */}
-        <Button size="small" type="primary">
-          confirm
-        </Button>
+        <Tooltip title="Claim that you have paid this amount back.">
+          <Button
+            icon={<CheckOutlined />}
+            onClick={() => handleConfirm(record)}
+            shape="circle"
+            size="small"
+            type="primary"
+          />
+        </Tooltip>
       </Space>
     ),
   },
@@ -90,6 +125,7 @@ const TabAmountToReturn = () => {
           key: borrower._id,
           lender,
           recordedAt: expense.recordedAt,
+          borrower,
         });
       }
     });

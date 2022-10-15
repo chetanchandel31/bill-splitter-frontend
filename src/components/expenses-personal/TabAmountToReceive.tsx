@@ -1,19 +1,55 @@
-import { Button, Skeleton, Space, Spin, Table, Typography } from "antd";
+import { CheckOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Modal,
+  Skeleton,
+  Space,
+  Spin,
+  Table,
+  Tag,
+  Tooltip,
+  Typography,
+} from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import moment from "moment";
 import { ReactNode } from "react";
+import { Borrower } from "types";
 import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
+import AmountToReceiveStatus from "./helpers/AmountToReceiveStatus";
 
 // what data will be used to render a single row, just focus on making all necessary data available, formatting can happen later
+
 type DataType = {
   key: string;
   expense: string;
-  borrower: string;
+  borrower: Borrower;
+  borrowerNameAndEmail: string;
   amount: number;
   recordedAt: number;
+};
+
+const handleConfirm = (record: DataType) => {
+  Modal.confirm({
+    title: "Are you sure?",
+    icon: <ExclamationCircleOutlined />,
+    content: (
+      <>
+        You are confirming that you have received{" "}
+        <strong>{getFormattedCurrencyString({ amount: record.amount })}</strong>{" "}
+        back from <strong>{record.borrowerNameAndEmail}</strong> for the expense{" "}
+        <strong>{record.expense}</strong> ? This expense will be marked as{" "}
+        <Tag color="success">Settled</Tag>.
+      </>
+    ),
+    okText: "Yes",
+    cancelText: "No",
+    onOk: () => {
+      console.log("fire api call 🚀");
+    },
+  });
 };
 
 const columns: ColumnsType<DataType> = [
@@ -32,9 +68,9 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: "Borrower",
-    dataIndex: "borrower",
-    key: "borrower",
-    render: (text) => <>{text}</>,
+    dataIndex: "borrowerNameAndEmail",
+    key: "borrowerNameAndEmail",
+    render: (text, record) => <>{text}</>,
   },
   {
     title: "Amount Lent",
@@ -45,14 +81,24 @@ const columns: ColumnsType<DataType> = [
     ),
   },
   {
-    title: "Action",
+    title: "Status",
+    key: "status",
+    render: (_, record) => <AmountToReceiveStatus borrower={record.borrower} />,
+  },
+  {
+    title: "",
     key: "action",
     render: (_, record) => (
       <Space size="middle">
-        {/* TODO: make something useful */}
-        <Button size="small" type="primary">
-          confirm
-        </Button>
+        <Tooltip title="Mark this expense as settled">
+          <Button
+            icon={<CheckOutlined />}
+            onClick={() => handleConfirm(record)}
+            shape="circle"
+            size="small"
+            type="primary"
+          />
+        </Tooltip>
       </Space>
     ),
   },
@@ -82,7 +128,8 @@ const TabAmountToReceive = () => {
 
           tableData.push({
             amount: _borrower.amountBorrowed,
-            borrower,
+            borrower: _borrower,
+            borrowerNameAndEmail: borrower,
             expense: expense.expenseTitle,
             key: _borrower._id,
             recordedAt: expense.recordedAt,
