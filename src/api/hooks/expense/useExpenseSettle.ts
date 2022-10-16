@@ -21,8 +21,8 @@ type UseExpenseSettleParams = {
 const expenseSettle: MutationFunction<
   SuccessResponseExpenseSettle,
   PayloadExpenseSettle
-> = ({ expenseId }) => {
-  return API.post(`/expenses/${expenseId}/settle`);
+> = ({ expenseId, groupId }) => {
+  return API.patch(`/expenses/${expenseId}/settle`, { groupId });
 };
 
 const useExpenseSettle = ({ onError, onSuccess }: UseExpenseSettleParams) => {

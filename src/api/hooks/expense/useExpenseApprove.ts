@@ -22,8 +22,10 @@ type UseExpenseApproveParams = {
 const expenseApprove: MutationFunction<
   SuccessResponseExpenseApprove,
   PayloadExpenseApprove
-> = ({ borrowerId, expenseId }) => {
-  return API.post(`/expenses/${expenseId}/borrowers/${borrowerId}/approve`);
+> = ({ borrowerId, expenseId, groupId }) => {
+  return API.patch(`/expenses/${expenseId}/borrowers/${borrowerId}/approve`, {
+    groupId,
+  });
 };
 
 const useExpenseApprove = ({ onError, onSuccess }: UseExpenseApproveParams) => {

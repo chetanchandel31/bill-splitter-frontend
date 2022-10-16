@@ -42,10 +42,11 @@ const TabAmountToReceive = () => {
     selectedGroupDetails,
   } = useSelectedGroup();
 
-  const { mutate: approveExpense } = useExpenseApprove({
-    onError: showErrorMessage,
-    onSuccess: () => message.success("Expense approved successfully"),
-  });
+  const { isLoading: isExpenseApproveLoading, mutate: approveExpense } =
+    useExpenseApprove({
+      onError: showErrorMessage,
+      onSuccess: () => message.success("Expense approved successfully"),
+    });
 
   const handleConfirm = (record: DataType) => {
     Modal.confirm({
@@ -65,11 +66,13 @@ const TabAmountToReceive = () => {
       okText: "Yes",
       cancelText: "No",
       onOk: () => {
-        approveExpense({
-          borrowerId: record.borrower._id,
-          expenseId: "",
-          groupId: selectedGroupDetails?._id ?? "",
-        });
+        if (selectedGroupDetails?._id) {
+          approveExpense({
+            borrowerId: record.borrower._id,
+            expenseId: record.expenseId,
+            groupId: selectedGroupDetails._id,
+          });
+        }
       },
     });
   };
@@ -117,6 +120,7 @@ const TabAmountToReceive = () => {
           <Tooltip title="Mark this expense as settled">
             <Button
               icon={<CheckOutlined />}
+              loading={isExpenseApproveLoading}
               onClick={() => handleConfirm(record)}
               shape="circle"
               size="small"
