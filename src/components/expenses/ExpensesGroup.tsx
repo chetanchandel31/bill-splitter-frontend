@@ -144,7 +144,7 @@ const ExpensesGroup = () => {
                             <Tag style={{ userSelect: "none" }}>(You)</Tag>
                           )}
                         </Typography.Text>
-                        <Typography.Text type="danger">
+                        <Typography.Text type={textColor}>
                           <Tooltip title={tooltipContent} placement="left">
                             <Tag
                               color={tagColor}
