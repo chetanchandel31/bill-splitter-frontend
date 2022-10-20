@@ -3,6 +3,7 @@ import {
   Divider,
   Empty,
   Skeleton,
+  Spin,
   Tag,
   Tooltip,
   Typography,
@@ -20,7 +21,11 @@ const { Panel } = Collapse;
 
 const ExpensesGroup = () => {
   const { userInfo } = useAuth();
-  const { isSelectedGroupLoading, selectedGroupDetails } = useSelectedGroup();
+  const {
+    isSelectedGroupFetching,
+    isSelectedGroupLoading,
+    selectedGroupDetails,
+  } = useSelectedGroup();
 
   const [expandedExpenses, setExpandedExpenses] = useState<string[]>([]);
 
@@ -39,143 +44,149 @@ const ExpensesGroup = () => {
     expenseList = <Skeleton paragraph={{ rows: 4 }} />;
   } else if (expenses?.length) {
     expenseList = (
-      <Collapse
-        className={`site-collapse-custom-collapse ${styles.collapse}`}
-        onChange={onChange}
-      >
-        {selectedGroupDetails?.expenses.map((expense) => {
-          const totalExpenseAmount = expense.borrowers.reduce(
-            (prevVal, currentVal) => prevVal + currentVal.amountBorrowed,
-            expense.lender.amountPaidForOwnExpense
-          );
+      <Spin spinning={isSelectedGroupFetching}>
+        <Collapse
+          className={`site-collapse-custom-collapse ${styles.collapse}`}
+          onChange={onChange}
+        >
+          {selectedGroupDetails?.expenses.map((expense) => {
+            const totalExpenseAmount = expense.borrowers.reduce(
+              (prevVal, currentVal) => prevVal + currentVal.amountBorrowed,
+              expense.lender.amountPaidForOwnExpense
+            );
 
-          const recordedAt = Number(expense.recordedAt.toString().slice(0, -3));
+            const recordedAt = Number(
+              expense.recordedAt.toString().slice(0, -3)
+            );
 
-          const lenderName = getParticipantDetails({
-            participantId: expense.lender.user,
-            selectedGroupDetails,
-          })?.name;
+            const lenderName = getParticipantDetails({
+              participantId: expense.lender.user,
+              selectedGroupDetails,
+            })?.name;
 
-          return (
-            <Panel
-              className="site-collapse-custom-panel"
-              header={
-                <div className={styles.expensePanelHeader}>
-                  <div>
-                    <strong>{expense.expenseTitle}</strong>
+            return (
+              <Panel
+                className="site-collapse-custom-panel"
+                header={
+                  <div className={styles.expensePanelHeader}>
                     <div>
-                      <Typography.Text type="secondary">
-                        <small>
-                          {moment
-                            .unix(recordedAt)
-                            .format("MMMM Do YYYY, h:mm a")}
-                        </small>
-                      </Typography.Text>
+                      <strong>{expense.expenseTitle}</strong>
+                      <div>
+                        <Typography.Text type="secondary">
+                          <small>
+                            {moment
+                              .unix(recordedAt)
+                              .format("MMMM Do YYYY, h:mm a")}
+                          </small>
+                        </Typography.Text>
+                      </div>
                     </div>
-                  </div>
 
-                  {!expandedExpenses.includes(expense._id) && (
-                    <span>
+                    {!expandedExpenses.includes(expense._id) && (
+                      <span>
+                        {getFormattedCurrencyString({
+                          amount: totalExpenseAmount,
+                        })}
+                      </span>
+                    )}
+                  </div>
+                }
+                key={expense._id}
+              >
+                <p>
+                  <div className={styles.expensePanelItem}>
+                    <strong>Username</strong>
+                    <strong>Amount</strong>
+                  </div>
+                  <Divider style={{ margin: "8px 0" }} />
+
+                  <div className={styles.expensePanelItem}>
+                    <Typography.Text type="success">
+                      {lenderName}{" "}
+                      <Tag color="success" style={{ userSelect: "none" }}>
+                        Lender
+                      </Tag>
+                      {expense.lender.user === userInfo?.user._id && (
+                        <Tag style={{ userSelect: "none" }}>(You)</Tag>
+                      )}
+                    </Typography.Text>
+                    <Typography.Text type="success">
+                      {getFormattedCurrencyString({
+                        amount: expense.lender.amountPaidForOwnExpense,
+                      })}
+                    </Typography.Text>
+                  </div>
+                  <Divider style={{ margin: "8px 0" }} />
+
+                  {expense.borrowers.map((borrower) => {
+                    let textColor: "danger" | "success" | "warning" = "danger";
+                    let expenseStatus = "Unsettled";
+                    let tagColor: "error" | "success" | "warning" = "error";
+                    let tooltipContent =
+                      "The borrowed amount hasn't been paid back yet";
+
+                    if (borrower.isApprovedByLender) {
+                      textColor = "success";
+                      expenseStatus = "Settled";
+                      tagColor = "success";
+                      tooltipContent = "The borrowed amount has been paid back";
+                    } else if (borrower.isSettled) {
+                      textColor = "warning";
+                      expenseStatus = "Settlement pending";
+                      tagColor = "warning";
+                      tooltipContent =
+                        "Lender hasn't approved the settlement of this expense yet";
+                    }
+
+                    const borrowerName = getParticipantDetails({
+                      participantId: borrower.user,
+                      selectedGroupDetails,
+                    })?.name;
+
+                    return (
+                      <Fragment key={borrower._id}>
+                        <div className={styles.expensePanelItem}>
+                          <Typography.Text type={textColor}>
+                            {borrowerName}{" "}
+                            {borrower.user === userInfo?.user._id && (
+                              <Tag style={{ userSelect: "none" }}>(You)</Tag>
+                            )}
+                          </Typography.Text>
+                          <Typography.Text type={textColor}>
+                            <Tooltip title={tooltipContent} placement="left">
+                              <Tag
+                                color={tagColor}
+                                style={{ userSelect: "none" }}
+                              >
+                                {expenseStatus}
+                              </Tag>
+                            </Tooltip>{" "}
+                            +
+                            {getFormattedCurrencyString({
+                              amount: borrower.amountBorrowed,
+                            })}
+                          </Typography.Text>
+                        </div>
+                        <Divider style={{ margin: "8px 0" }} />
+                      </Fragment>
+                    );
+                  })}
+
+                  <div className={styles.expensePanelItem}>
+                    <strong>Total</strong>
+                    <strong>
+                      =
                       {getFormattedCurrencyString({
                         amount: totalExpenseAmount,
                       })}
-                    </span>
-                  )}
-                </div>
-              }
-              key={expense._id}
-            >
-              <p>
-                <div className={styles.expensePanelItem}>
-                  <strong>Username</strong>
-                  <strong>Amount</strong>
-                </div>
-                <Divider style={{ margin: "8px 0" }} />
-
-                <div className={styles.expensePanelItem}>
-                  <Typography.Text type="success">
-                    {lenderName}{" "}
-                    <Tag color="success" style={{ userSelect: "none" }}>
-                      Lender
-                    </Tag>
-                    {expense.lender.user === userInfo?.user._id && (
-                      <Tag style={{ userSelect: "none" }}>(You)</Tag>
-                    )}
-                  </Typography.Text>
-                  <Typography.Text type="success">
-                    {getFormattedCurrencyString({
-                      amount: expense.lender.amountPaidForOwnExpense,
-                    })}
-                  </Typography.Text>
-                </div>
-                <Divider style={{ margin: "8px 0" }} />
-
-                {expense.borrowers.map((borrower) => {
-                  let textColor: "danger" | "success" | "warning" = "danger";
-                  let expenseStatus = "Unsettled";
-                  let tagColor: "error" | "success" | "warning" = "error";
-                  let tooltipContent =
-                    "The borrowed amount hasn't been paid back yet";
-
-                  if (borrower.isApprovedByLender) {
-                    textColor = "success";
-                    expenseStatus = "Settled";
-                    tagColor = "success";
-                    tooltipContent = "The borrowed amount has been paid back";
-                  } else if (borrower.isSettled) {
-                    textColor = "warning";
-                    expenseStatus = "Settlement pending";
-                    tagColor = "warning";
-                    tooltipContent =
-                      "Lender hasn't approved the settlement of this expense yet";
-                  }
-
-                  const borrowerName = getParticipantDetails({
-                    participantId: borrower.user,
-                    selectedGroupDetails,
-                  })?.name;
-
-                  return (
-                    <Fragment key={borrower._id}>
-                      <div className={styles.expensePanelItem}>
-                        <Typography.Text type={textColor}>
-                          {borrowerName}{" "}
-                          {borrower.user === userInfo?.user._id && (
-                            <Tag style={{ userSelect: "none" }}>(You)</Tag>
-                          )}
-                        </Typography.Text>
-                        <Typography.Text type={textColor}>
-                          <Tooltip title={tooltipContent} placement="left">
-                            <Tag
-                              color={tagColor}
-                              style={{ userSelect: "none" }}
-                            >
-                              {expenseStatus}
-                            </Tag>
-                          </Tooltip>{" "}
-                          +
-                          {getFormattedCurrencyString({
-                            amount: borrower.amountBorrowed,
-                          })}
-                        </Typography.Text>
-                      </div>
-                      <Divider style={{ margin: "8px 0" }} />
-                    </Fragment>
-                  );
-                })}
-
-                <div className={styles.expensePanelItem}>
-                  <strong>Total</strong>
-                  <strong>
-                    =
-                    {getFormattedCurrencyString({ amount: totalExpenseAmount })}
-                  </strong>
-                </div>
-              </p>
-            </Panel>
-          );
-        })}
-      </Collapse>
+                    </strong>
+                  </div>
+                </p>
+              </Panel>
+            );
+          })}
+        </Collapse>
+      </Spin>
     );
   } else {
     expenseList = (

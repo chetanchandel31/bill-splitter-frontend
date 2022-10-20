@@ -30,13 +30,17 @@ const AddExpenseBtn = () => {
   const { currentStep, expenseTitle, isModalVisible, totalExpenseAmount } =
     newExpenseMeta;
 
-  const { mutate: createExpense } = useExpenseCreate({
-    onError: showErrorMessage,
-    onSuccess: () => message.success("expense added successfully"),
-  });
-
   const showModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: true });
   const hideModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: false });
+
+  const { isLoading: isCreateExpenseLoading, mutate: createExpense } =
+    useExpenseCreate({
+      onError: showErrorMessage,
+      onSuccess: () => {
+        message.success("expense added successfully");
+        hideModal();
+      },
+    });
 
   let isOkDisabled = false;
   let errorMessage;
@@ -70,8 +74,6 @@ const AddExpenseBtn = () => {
           user: id,
         })),
       });
-
-      hideModal();
     }
   };
 
@@ -89,7 +91,10 @@ const AddExpenseBtn = () => {
         title="Add new expense"
         visible={isModalVisible}
         onOk={handleOk}
-        okButtonProps={{ disabled: isOkDisabled }}
+        okButtonProps={{
+          disabled: isOkDisabled,
+          loading: isCreateExpenseLoading,
+        }}
         onCancel={hideModal}
         okText={currentStep < steps.length - 1 ? "Next" : "Create new expense"}
         cancelText="Cancel"
