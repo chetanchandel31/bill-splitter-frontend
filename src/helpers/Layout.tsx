@@ -43,6 +43,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const doExpandExpensesOnInitialRender =
+    location.pathname === "/" || location.pathname === "/personal-expenses";
+
   // antd's layout component jumps on first render :(
   // TODO: footer?
   return (
@@ -63,6 +66,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
             <Menu
               // theme="dark"
               defaultSelectedKeys={[location.pathname]}
+              defaultOpenKeys={doExpandExpensesOnInitialRender ? ["sub1"] : []}
               selectedKeys={[location.pathname]}
               mode="inline"
               items={items}
