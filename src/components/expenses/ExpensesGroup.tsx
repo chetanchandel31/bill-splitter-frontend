@@ -201,8 +201,6 @@ const ExpensesGroup = () => {
       <AddExpenseBtn />
 
       {expenseList}
-
-      <pre>{JSON.stringify(selectedGroupDetails?.expenses, null, 2)}</pre>
     </>
   );
 };
