@@ -1,0 +1,27 @@
+.expenseDetailsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 24px 16px 0;
+}
+
+.newExpenseError {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.addExpenseBtnContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.expenseDetailsInfo {
+  margin-bottom: 24px;
+}
+
+.participantCheckbox {
+  margin-bottom: 16px;
+}

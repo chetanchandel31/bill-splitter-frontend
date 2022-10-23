@@ -4,13 +4,16 @@ import AppRoutes from "./AppRoutes";
 import "antd/dist/antd.min.css";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import AllProviders from "AllProviders";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AppRoutes />
+    <AllProviders>
+      <AppRoutes />
+    </AllProviders>
   </React.StrictMode>
 );
 

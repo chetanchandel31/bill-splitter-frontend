@@ -14,6 +14,7 @@ import moment from "moment";
 import { Fragment, useState } from "react";
 import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
+import BtnAddNewExpense from "./BtnAddNewExpenseV2";
 import styles from "./expensesGroup.module.css";
 import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 
@@ -199,6 +200,7 @@ const ExpensesGroup = () => {
   return (
     <>
       <AddExpenseBtn />
+      <BtnAddNewExpense />
 
       {expenseList}
     </>
