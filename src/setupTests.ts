@@ -3,6 +3,8 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
+import { setupServer } from "msw/node";
+import { handlers } from "testUtils/mockApiHandlers";
 
 global.matchMedia =
   global.matchMedia ||
@@ -13,3 +15,14 @@ global.matchMedia =
       removeListener: jest.fn(),
     };
   };
+
+// setup mock server for testing network calls
+export const server = setupServer(...handlers);
+
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+// Clean up after the tests are finished.
+afterAll(() => server.close());

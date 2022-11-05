@@ -2,13 +2,15 @@ import useGroupGetById from "api/hooks/groups/useGroupGetById";
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { AxiosErrorBillSplitter } from "types";
-import { showErrorMessage } from "utils";
+import { isTestingEnv, showErrorMessage } from "utils";
 import { GroupContext } from "./group-context";
 
 const SELECTED_GROUP = "selected-group";
 
 export const GroupProvider = ({ children }: { children: ReactNode }) => {
-  const selectedGroupId = localStorage.getItem(SELECTED_GROUP);
+  const selectedGroupId = isTestingEnv()
+    ? "dummy-id"
+    : localStorage.getItem(SELECTED_GROUP);
   const navigate = useNavigate();
 
   const onError = (error: AxiosErrorBillSplitter) => {
