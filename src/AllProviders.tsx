@@ -4,9 +4,18 @@ import { AuthProvider } from "contexts/auth-context";
 import { GroupProvider } from "contexts/group-context";
 import { ReactNode } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
+import { isTestingEnv } from "utils";
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false } },
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, retry: !isTestingEnv() },
+  },
+  logger: {
+    log: console.log,
+    warn: console.warn,
+    // ✅ no more errors on the console for tests
+    error: isTestingEnv() ? () => {} : console.error,
+  },
 });
 
 const AllProviders = ({ children }: { children: ReactNode }) => {
