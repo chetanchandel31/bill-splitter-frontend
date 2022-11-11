@@ -1,8 +1,10 @@
 import { Alert, Input, Typography } from "antd";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { actionTypeNewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/actions";
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import styles from "components/expenses/BtnAddNewExpenseV2/stepAddExpense.module.css";
 import { ChangeEvent, Dispatch } from "react";
+import { User } from "types";
 import GroupMembersList from "./GroupMembersList";
 
 type PropsStepExpenseDetails = {
@@ -16,6 +18,13 @@ const StepExpenseDetails = ({
 }: PropsStepExpenseDetails) => {
   const onExpenseTitleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
     dispatch({ type: "SET_EXPENSE_TITLE", payload: target.value });
+  };
+
+  const handleChange = (e: CheckboxChangeEvent, participant: User) => {
+    dispatch({
+      type: e.target.checked ? "SELECT_PARTICIPANT" : "UNSELECT_PARTICIPANT",
+      payload: { participantId: participant._id },
+    });
   };
 
   return (
@@ -45,7 +54,10 @@ const StepExpenseDetails = ({
         Please select the group members involved in this expense:
       </Typography.Title>
 
-      <GroupMembersList />
+      <GroupMembersList
+        onChange={handleChange}
+        selectedParticipantsId={newExpenseMeta.selectedParticipantsId}
+      />
     </div>
   );
 };
