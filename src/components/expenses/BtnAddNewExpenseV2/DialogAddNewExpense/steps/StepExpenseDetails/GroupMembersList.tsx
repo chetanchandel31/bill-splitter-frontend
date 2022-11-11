@@ -70,7 +70,7 @@ const GroupMembersList = ({
   }
 
   return (
-    <div>
+    <div data-testid="container-select-participants">
       <Spin spinning={isSelectedGroupFetching}>{participantsList}</Spin>
     </div>
   );

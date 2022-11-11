@@ -194,8 +194,8 @@ describe("<GroupMembersList />", () => {
 
     const firstCallArgs = mockChangeHandler.mock.calls[0];
 
-    // TODO: it's an implementation detail, still testing it because this component can be used independently anywhere
-    // and this interface working correctly is important for that
+    // it's an implementation detail, still testing it because this component can be used independently anywhere
+    // and this interface working correctly is important for that. Actual user interaction is tested by it's parent
     expect(firstCallArgs[0]?.target?.checked).toBe(true);
 
     expect(firstCallArgs[1]).toEqual(

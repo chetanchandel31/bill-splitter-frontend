@@ -7,6 +7,7 @@ import { NewExpenseMeta } from "../state/reducers";
 import StepDistributeExpense from "./steps/StepDistributeExpense";
 import StepExpenseDetails from "./steps/StepExpenseDetails";
 import styles from "../stepAddExpense.module.css";
+import { getFirstStepErrors } from "../utils/getStepsErrors";
 
 const { Step } = Steps;
 
@@ -21,8 +22,7 @@ const DialogAddNewExpense = ({
   dispatch,
   newExpenseMeta,
 }: DialogAddNEwExpenseProps) => {
-  const { currentStep, expenseTitle, isModalVisible, totalExpenseAmount } =
-    newExpenseMeta;
+  const { currentStep, isModalVisible } = newExpenseMeta;
 
   const hideModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: false });
 
@@ -35,17 +35,14 @@ const DialogAddNewExpense = ({
       },
     });
 
-  let isOkDisabled = false;
   let errorMessage;
 
-  if (currentStep === 0 && (!expenseTitle || !totalExpenseAmount)) {
-    isOkDisabled = true;
-    errorMessage = "Please enter both expense title and expense amount";
+  if (currentStep === 0) {
+    errorMessage = getFirstStepErrors(newExpenseMeta);
   } else if (
     currentStep === 1 &&
     newExpenseMeta.selectedParticipantsId.length < 1
   ) {
-    isOkDisabled = true;
     errorMessage =
       "You need to have atleast one participant other than yourself";
   }
@@ -79,7 +76,7 @@ const DialogAddNewExpense = ({
       visible={isModalVisible}
       onOk={handleOk}
       okButtonProps={{
-        disabled: isOkDisabled,
+        disabled: !!errorMessage,
         loading: isCreateExpenseLoading,
       }}
       onCancel={hideModal}
@@ -101,8 +98,11 @@ const DialogAddNewExpense = ({
 
       {currentStep === 1 && <StepDistributeExpense />}
 
-      {isOkDisabled && (
-        <div className={styles.newExpenseError}>
+      {!!errorMessage && (
+        <div
+          aria-label="error-message-new-expense"
+          className={styles.newExpenseError}
+        >
           <Alert message={errorMessage} type="error" />
         </div>
       )}
