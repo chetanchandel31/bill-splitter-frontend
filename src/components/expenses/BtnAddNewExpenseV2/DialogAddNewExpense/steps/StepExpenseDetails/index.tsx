@@ -50,14 +50,16 @@ const StepExpenseDetails = ({
         />
       </div>
 
-      <Typography.Title level={5}>
-        Please select the group members involved in this expense:
-      </Typography.Title>
+      <div>
+        <Typography.Title level={5}>
+          Please select the group members involved in this expense:
+        </Typography.Title>
 
-      <GroupMembersList
-        onChange={handleChange}
-        selectedParticipantsId={newExpenseMeta.selectedParticipantsId}
-      />
+        <GroupMembersList
+          onChange={handleChange}
+          selectedParticipantsId={newExpenseMeta.selectedParticipantsId}
+        />
+      </div>
     </div>
   );
 };

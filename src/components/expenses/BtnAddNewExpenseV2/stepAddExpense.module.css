@@ -1,7 +1,7 @@
 .expenseDetailsContainer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   margin: 24px 16px 0;
 }
 
