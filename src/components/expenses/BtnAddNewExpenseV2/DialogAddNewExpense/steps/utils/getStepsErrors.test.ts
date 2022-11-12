@@ -1,34 +1,37 @@
+import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import { getFirstStepErrors, getSecondStepErrors } from "./getStepsErrors";
+
+const mockExpenseMeta: NewExpenseMeta = {
+  currentStep: 0,
+  expenseTitle: "",
+  isModalVisible: true,
+  selectedParticipantsId: [],
+  totalExpenseAmount: 0,
+  modeExpenseDistribution: "simple",
+};
 
 describe("getStepsErrors", () => {
   test("first step errors", () => {
     expect(
       getFirstStepErrors({
-        currentStep: 0,
+        ...mockExpenseMeta,
         expenseTitle: "",
-        isModalVisible: true,
-        selectedParticipantsId: [],
-        totalExpenseAmount: 11,
       })
     ).toEqual("You need to enter expense title before proceeding");
 
     expect(
       getFirstStepErrors({
-        currentStep: 0,
+        ...mockExpenseMeta,
         expenseTitle: "my expense",
-        isModalVisible: true,
         selectedParticipantsId: [],
-        totalExpenseAmount: 11,
       })
     ).toEqual("You need to select atleast one participant other than yourself");
 
     expect(
       getFirstStepErrors({
-        currentStep: 0,
+        ...mockExpenseMeta,
         expenseTitle: "my expense",
-        isModalVisible: true,
         selectedParticipantsId: ["mockID"],
-        totalExpenseAmount: 11,
       })
     ).toEqual("");
   });
@@ -36,20 +39,14 @@ describe("getStepsErrors", () => {
   test("second step errors", () => {
     expect(
       getSecondStepErrors({
-        currentStep: 0,
-        expenseTitle: "aa",
-        isModalVisible: true,
-        selectedParticipantsId: [],
+        ...mockExpenseMeta,
         totalExpenseAmount: 0,
       })
     ).toBe("Total expense amount can't be zero");
 
     expect(
       getSecondStepErrors({
-        currentStep: 0,
-        expenseTitle: "aa",
-        isModalVisible: true,
-        selectedParticipantsId: [],
+        ...mockExpenseMeta,
         totalExpenseAmount: 80,
       })
     ).toBe("");

@@ -7,7 +7,10 @@ import { NewExpenseMeta } from "../state/reducers";
 import StepDistributeExpense from "./steps/StepDistributeExpense";
 import StepExpenseDetails from "./steps/StepExpenseDetails";
 import styles from "../stepAddExpense.module.css";
-import { getFirstStepErrors } from "./steps/utils/getStepsErrors";
+import {
+  getFirstStepErrors,
+  getSecondStepErrors,
+} from "./steps/utils/getStepsErrors";
 
 const { Step } = Steps;
 
@@ -39,12 +42,8 @@ const DialogAddNewExpense = ({
 
   if (currentStep === 0) {
     errorMessage = getFirstStepErrors(newExpenseMeta);
-  } else if (
-    currentStep === 1 &&
-    newExpenseMeta.selectedParticipantsId.length < 1
-  ) {
-    errorMessage =
-      "You need to have atleast one participant other than yourself";
+  } else if (currentStep === 1) {
+    errorMessage = getSecondStepErrors(newExpenseMeta);
   }
 
   const handleOk = () => {

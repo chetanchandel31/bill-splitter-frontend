@@ -6,6 +6,7 @@ export type NewExpenseMeta = {
   expenseTitle: string;
   totalExpenseAmount: number;
   selectedParticipantsId: string[];
+  modeExpenseDistribution: "simple" | "advanced";
 };
 
 export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
@@ -14,6 +15,7 @@ export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
   expenseTitle: "",
   totalExpenseAmount: 0,
   selectedParticipantsId: [],
+  modeExpenseDistribution: "simple",
 };
 
 export const reducerNewExpenseMeta = (
@@ -61,6 +63,13 @@ export const reducerNewExpenseMeta = (
         selectedParticipantsId: state.selectedParticipantsId.filter(
           (participantId) => participantId !== action.payload.participantId
         ),
+      };
+    }
+
+    case "SET_EXPENSE_DISTRIBUTION_MODE": {
+      return {
+        ...state,
+        modeExpenseDistribution: action.payload,
       };
     }
 

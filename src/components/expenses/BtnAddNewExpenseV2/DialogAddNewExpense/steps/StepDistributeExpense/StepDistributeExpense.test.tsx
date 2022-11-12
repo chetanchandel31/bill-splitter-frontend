@@ -9,6 +9,7 @@ const mockNewExpenseMeta: NewExpenseMeta = {
   isModalVisible: true,
   selectedParticipantsId: [],
   totalExpenseAmount: 100,
+  modeExpenseDistribution: "simple",
 };
 
 describe("<StepDistributeExpense />", () => {
