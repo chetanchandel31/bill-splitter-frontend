@@ -7,7 +7,7 @@ import { NewExpenseMeta } from "../state/reducers";
 import StepDistributeExpense from "./steps/StepDistributeExpense";
 import StepExpenseDetails from "./steps/StepExpenseDetails";
 import styles from "../stepAddExpense.module.css";
-import { getFirstStepErrors } from "../utils/getStepsErrors";
+import { getFirstStepErrors } from "./steps/utils/getStepsErrors";
 
 const { Step } = Steps;
 
