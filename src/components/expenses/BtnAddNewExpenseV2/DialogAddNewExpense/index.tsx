@@ -96,7 +96,12 @@ const DialogAddNewExpense = ({
         />
       )}
 
-      {currentStep === 1 && <StepDistributeExpense />}
+      {currentStep === 1 && (
+        <StepDistributeExpense
+          dispatch={dispatch}
+          newExpenseMeta={newExpenseMeta}
+        />
+      )}
 
       {!!errorMessage && (
         <div
