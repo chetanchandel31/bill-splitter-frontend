@@ -59,6 +59,7 @@ const StepDistributeExpense = ({
 
         {newExpenseMeta.modeExpenseDistribution === "simple" && (
           <Alert
+            closable
             description={`Simple mode will divide ${
               newExpenseMeta.totalExpenseAmount
                 ? getFormattedCurrencyString({
@@ -66,9 +67,9 @@ const StepDistributeExpense = ({
                   })
                 : "the amount"
             } equally among all participants`}
+            data-testId="expense-distribution-simple-mode"
             type="info"
             showIcon
-            closable
           />
         )}
       </div>
