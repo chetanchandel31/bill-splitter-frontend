@@ -7,7 +7,10 @@ const mockExpenseMeta: NewExpenseMeta = {
   isModalVisible: true,
   selectedParticipantsId: [],
   totalExpenseAmount: 0,
-  modeExpenseDistribution: "simple",
+  distributedTotalExpense: {
+    amountPaidForOwnExpense: 0,
+    borrowerToExpenseMap: {},
+  },
 };
 
 describe("getStepsErrors", () => {

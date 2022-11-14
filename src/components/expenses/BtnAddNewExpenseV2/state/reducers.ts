@@ -4,9 +4,14 @@ export type NewExpenseMeta = {
   isModalVisible: boolean;
   currentStep: number;
   expenseTitle: string;
-  totalExpenseAmount: number;
   selectedParticipantsId: string[];
-  modeExpenseDistribution: "simple" | "advanced";
+  totalExpenseAmount: number;
+  distributedTotalExpense: {
+    amountPaidForOwnExpense: number;
+    borrowerToExpenseMap: {
+      [userId: string]: number;
+    };
+  };
 };
 
 export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
@@ -15,7 +20,10 @@ export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
   expenseTitle: "",
   totalExpenseAmount: 0,
   selectedParticipantsId: [],
-  modeExpenseDistribution: "simple",
+  distributedTotalExpense: {
+    amountPaidForOwnExpense: 0,
+    borrowerToExpenseMap: {},
+  },
 };
 
 export const reducerNewExpenseMeta = (
@@ -66,10 +74,22 @@ export const reducerNewExpenseMeta = (
       };
     }
 
-    case "SET_EXPENSE_DISTRIBUTION_MODE": {
+    case "INITIALIZE_EXPENSE_DISTRIBUTION": {
+      const dividedExpenseAmount =
+        state.totalExpenseAmount / (state.selectedParticipantsId.length + 1);
+
+      const borrowerToExpenseMap: { [id: string]: number } = {};
+
+      state.selectedParticipantsId.forEach((participantId) => {
+        borrowerToExpenseMap[participantId] = dividedExpenseAmount;
+      });
+
       return {
         ...state,
-        modeExpenseDistribution: action.payload,
+        distributedTotalExpense: {
+          amountPaidForOwnExpense: dividedExpenseAmount,
+          borrowerToExpenseMap,
+        },
       };
     }
 

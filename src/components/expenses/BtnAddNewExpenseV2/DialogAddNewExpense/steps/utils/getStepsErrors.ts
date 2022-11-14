@@ -1,4 +1,5 @@
 import { NewExpenseMeta } from "../../../state/reducers";
+import isExpenseDistributionInitialised from "./isExpenseDistributionInitialised";
 
 export const getFirstStepErrors = (newExpenseMeta: NewExpenseMeta) => {
   let errorMessage = "";
@@ -18,6 +19,9 @@ export const getSecondStepErrors = (newExpenseMeta: NewExpenseMeta) => {
 
   if (newExpenseMeta.totalExpenseAmount < 1) {
     errorMessage = "Total expense amount can't be zero";
+  } else if (!isExpenseDistributionInitialised(newExpenseMeta)) {
+    errorMessage =
+      "Please divide the expense among participants before proceeding";
   }
 
   return errorMessage;

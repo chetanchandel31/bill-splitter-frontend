@@ -1,8 +1,11 @@
-import { Alert, Input, Radio, RadioChangeEvent, Space, Typography } from "antd";
+import { Button, Input, Typography } from "antd";
 import { actionTypeNewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/actions";
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
+import { useAuth } from "contexts/auth-context";
+import { useSelectedGroup } from "contexts/group-context";
 import { ChangeEvent, Dispatch } from "react";
-import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
+import { getParticipantDetails } from "utils";
+import isExpenseDistributionInitialised from "../utils/isExpenseDistributionInitialised";
 
 type PropsStepExpenseDetails = {
   newExpenseMeta: NewExpenseMeta;
@@ -13,17 +16,13 @@ const StepDistributeExpense = ({
   dispatch,
   newExpenseMeta,
 }: PropsStepExpenseDetails) => {
+  const { userInfo } = useAuth();
+  const { selectedGroupDetails } = useSelectedGroup();
+
   const onExpenseTotalChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: "SET_TOTAL_EXPENSE_AMOUNT",
       payload: Number(e.target.value),
-    });
-  };
-
-  const onChange = (e: RadioChangeEvent) => {
-    dispatch({
-      type: "SET_EXPENSE_DISTRIBUTION_MODE",
-      payload: e.target.value,
     });
   };
 
@@ -44,34 +43,61 @@ const StepDistributeExpense = ({
 
       <div>
         <Typography.Title level={5}>
-          How would you like to divide this expense among participants ?
+          Divide this expense among participants
         </Typography.Title>
 
-        <Radio.Group
-          onChange={onChange}
-          value={newExpenseMeta.modeExpenseDistribution}
-        >
-          <Space direction="vertical">
-            <Radio value={"simple"}>Divide amount equally</Radio>
-            <Radio value={"advanced"}>Customize how expense is divided</Radio>
-          </Space>
-        </Radio.Group>
+        {/* TODO: maybe center it */}
+        <div>
+          {isExpenseDistributionInitialised(newExpenseMeta) ? (
+            <>
+              <div>
+                {userInfo?.user.name} ({userInfo?.user.email})
+                <Input
+                  disabled
+                  type="number"
+                  onChange={() => {}}
+                  value={
+                    newExpenseMeta.distributedTotalExpense
+                      .amountPaidForOwnExpense
+                  }
+                />
+              </div>
+              <div>
+                {newExpenseMeta.selectedParticipantsId.map((participantId) => {
+                  const participant = getParticipantDetails({
+                    participantId,
+                    selectedGroupDetails,
+                  });
 
-        {newExpenseMeta.modeExpenseDistribution === "simple" && (
-          <Alert
-            closable
-            description={`Simple mode will divide ${
-              newExpenseMeta.totalExpenseAmount
-                ? getFormattedCurrencyString({
-                    amount: newExpenseMeta.totalExpenseAmount,
-                  })
-                : "the amount"
-            } equally among all participants`}
-            data-testId="expense-distribution-simple-mode"
-            type="info"
-            showIcon
-          />
-        )}
+                  return (
+                    <div key={participantId}>
+                      {participant?.name} ({participant?.email})
+                      <Input
+                        type="number"
+                        onChange={() => {}}
+                        value={
+                          newExpenseMeta.distributedTotalExpense
+                            .borrowerToExpenseMap[participantId]
+                        }
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <Button
+              disabled={!newExpenseMeta.totalExpenseAmount}
+              onClick={() => {
+                dispatch({ type: "INITIALIZE_EXPENSE_DISTRIBUTION" });
+              }}
+            >
+              Start dividing
+            </Button>
+          )}
+
+          <pre>{JSON.stringify(newExpenseMeta, null, 2)}</pre>
+        </div>
       </div>
     </div>
   );

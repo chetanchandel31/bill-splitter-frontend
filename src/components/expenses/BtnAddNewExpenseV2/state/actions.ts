@@ -8,4 +8,4 @@ export type actionTypeNewExpenseMeta =
   | { type: "SET_TOTAL_EXPENSE_AMOUNT"; payload: number }
   | { type: "SELECT_PARTICIPANT"; payload: { participantId: string } }
   | { type: "UNSELECT_PARTICIPANT"; payload: { participantId: string } }
-  | { type: "SET_EXPENSE_DISTRIBUTION_MODE"; payload: "simple" | "advanced" };
+  | { type: "INITIALIZE_EXPENSE_DISTRIBUTION" };

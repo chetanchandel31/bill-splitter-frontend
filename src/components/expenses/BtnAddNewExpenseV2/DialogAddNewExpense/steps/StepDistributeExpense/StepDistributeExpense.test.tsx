@@ -9,7 +9,10 @@ const mockNewExpenseMeta: NewExpenseMeta = {
   isModalVisible: true,
   selectedParticipantsId: [],
   totalExpenseAmount: 100,
-  modeExpenseDistribution: "simple",
+  distributedTotalExpense: {
+    amountPaidForOwnExpense: 0,
+    borrowerToExpenseMap: {},
+  },
 };
 
 describe("<StepDistributeExpense />", () => {
@@ -43,57 +46,5 @@ describe("<StepDistributeExpense />", () => {
     });
   });
 
-  test("fires correct functions upon switching 'expense distribution modes'", () => {
-    // TODO: again an implementation detail: parent component should test if it actually switches different modes for users
-    render(
-      <StepDistributeExpense
-        dispatch={mockDispatch}
-        newExpenseMeta={mockNewExpenseMeta}
-      />
-    );
-
-    const radioAdvanceedMode = screen.getByRole("radio", {
-      name: /Customize how expense is divided/i,
-    });
-
-    fireEvent.click(radioAdvanceedMode);
-
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: "SET_EXPENSE_DISTRIBUTION_MODE",
-      payload: "advanced",
-    });
-  });
-
-  test("expense-distribution-simple-mode should be open by default", () => {
-    render(
-      <StepDistributeExpense
-        dispatch={mockDispatch}
-        newExpenseMeta={mockNewExpenseMeta}
-      />
-    );
-
-    const simpleExpenseDistributionInfoBox = screen.getByTestId(
-      "expense-distribution-simple-mode"
-    );
-
-    expect(simpleExpenseDistributionInfoBox).toBeInTheDocument();
-  });
-
-  test("expense-distribution-advanced-mode should be opened when props specify", () => {
-    render(
-      <StepDistributeExpense
-        dispatch={mockDispatch}
-        newExpenseMeta={{
-          ...mockNewExpenseMeta,
-          modeExpenseDistribution: "advanced",
-        }}
-      />
-    );
-
-    const simpleExpenseDistributionInfoBox = screen.queryByTestId(
-      "expense-distribution-simple-mode"
-    );
-
-    expect(simpleExpenseDistributionInfoBox).not.toBeInTheDocument();
-  });
+  // TODO: btn shoould be disabled when total expense amt === 0
 });
