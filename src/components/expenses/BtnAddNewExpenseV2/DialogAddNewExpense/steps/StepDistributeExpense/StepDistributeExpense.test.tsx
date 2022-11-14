@@ -8,7 +8,7 @@ const mockNewExpenseMeta: NewExpenseMeta = {
   expenseTitle: "",
   isModalVisible: true,
   selectedParticipantsId: [],
-  totalExpenseAmount: 100,
+  totalExpenseAmount: 0,
   distributedTotalExpense: {
     amountPaidForOwnExpense: 0,
     borrowerToExpenseMap: {},
@@ -46,5 +46,55 @@ describe("<StepDistributeExpense />", () => {
     });
   });
 
-  // TODO: btn shoould be disabled when total expense amt === 0
+  test("button to start dividing expense should be existing and initially disabled(disabled because no total expense amount exists)", () => {
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={mockNewExpenseMeta}
+      />
+    );
+
+    const btnStartDividingExpense = screen.getByRole("button", {
+      name: /start dividing/i,
+    });
+
+    expect(btnStartDividingExpense).toBeDisabled();
+  });
+
+  test("button to start dividing expense should not be disabled when total expense amount exists", () => {
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={{ ...mockNewExpenseMeta, totalExpenseAmount: 2 }}
+      />
+    );
+
+    const btnStartDividingExpense = screen.getByRole("button", {
+      name: /start dividing/i,
+    });
+
+    expect(btnStartDividingExpense).not.toBeDisabled();
+  });
+
+  test("clicking on 'start dividing' button fires correct function", () => {
+    // TODO: implementation detail, parent should check if user interaction actually works
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={{ ...mockNewExpenseMeta, totalExpenseAmount: 2 }}
+      />
+    );
+
+    const btnStartDividingExpense = screen.getByRole("button", {
+      name: /start dividing/i,
+    });
+
+    fireEvent.click(btnStartDividingExpense);
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: "INITIALIZE_EXPENSE_DISTRIBUTION",
+    });
+  });
+
+  // TODO: when map exists btn shouldn't exist but textfields should
 });
