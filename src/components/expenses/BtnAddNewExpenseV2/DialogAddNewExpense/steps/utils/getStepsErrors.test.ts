@@ -50,7 +50,18 @@ describe("getStepsErrors", () => {
     expect(
       getSecondStepErrors({
         ...mockExpenseMeta,
+        totalExpenseAmount: 10,
+      })
+    ).toBe("Please divide the expense among participants before proceeding");
+
+    expect(
+      getSecondStepErrors({
+        ...mockExpenseMeta,
         totalExpenseAmount: 80,
+        distributedTotalExpense: {
+          amountPaidForOwnExpense: 1,
+          borrowerToExpenseMap: { mockId: 1 },
+        },
       })
     ).toBe("");
   });
