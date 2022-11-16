@@ -1,0 +1,29 @@
+.distributeExpenseContainer {
+  margin: 24px 16px 0;
+}
+
+.totalExpenseAmountContainer {
+  margin: 0 0 24px;
+}
+
+.containerBtnStartDividing {
+  text-align: center;
+}
+
+.expenseDivideListContainer {
+  margin-top: 16px;
+}
+
+.expenseDivideListItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.expenseDivideListItemLeft {
+  width: 80%;
+}
+
+.expenseDivideListItemRight {
+  flex-grow: 1;
+}

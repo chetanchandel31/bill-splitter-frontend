@@ -1,11 +1,13 @@
-import { Button, Input, Tag, Typography } from "antd";
+import { Button, Divider, Input, InputNumber, Tag, Typography } from "antd";
 import { actionTypeNewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/actions";
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
 import { ChangeEvent, Dispatch } from "react";
 import { getParticipantDetails } from "utils";
+import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 import isExpenseDistributionInitialised from "../utils/isExpenseDistributionInitialised";
+import styles from "./stepDistributeExpense.module.css";
 
 type PropsStepExpenseDetails = {
   newExpenseMeta: NewExpenseMeta;
@@ -19,6 +21,15 @@ const StepDistributeExpense = ({
   const { userInfo } = useAuth();
   const { selectedGroupDetails } = useSelectedGroup();
 
+  const borrowerExpenseTotal: number = Object.keys(
+    newExpenseMeta.distributedTotalExpense.borrowerToExpenseMap
+  ).reduce(
+    (prev, current) =>
+      prev +
+      newExpenseMeta.distributedTotalExpense.borrowerToExpenseMap[current],
+    0
+  );
+
   const onExpenseTotalChange = (e: ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: "SET_TOTAL_EXPENSE_AMOUNT",
@@ -26,30 +37,30 @@ const StepDistributeExpense = ({
     });
   };
 
-  const onOwnExpenseShareChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onOwnExpenseShareChange = (amount: number) => {
     dispatch({
       type: "UPDATE_OWN_SHARE_IN_EXPENSE_DISTRIBUTION",
-      payload: { amount: Number(e.target.value) },
+      payload: { amount },
     });
   };
 
   const onParticipantExpenseChange = (
-    e: ChangeEvent<HTMLInputElement>,
+    amount: number,
     participantId: string
   ) => {
     dispatch({
       type: "UPDATE_PARTICIPANT_EXPENSE_DISTRIBUTION",
       payload: {
-        amount: Number(e.target.value),
+        amount,
         participantId,
       },
     });
   };
 
   return (
-    <div>
+    <div className={styles.distributeExpenseContainer}>
       {!isExpenseDistributionInitialised(newExpenseMeta) && (
-        <div>
+        <div className={styles.totalExpenseAmountContainer}>
           <Typography.Title level={5}>
             How much did the entire expense cost?
           </Typography.Title>
@@ -68,31 +79,24 @@ const StepDistributeExpense = ({
           Divide this expense among participants
         </Typography.Title>
 
-        {/* TODO: maybe center it */}
-        <div>
+        <div className={styles.expenseDivideListContainer}>
           {isExpenseDistributionInitialised(newExpenseMeta) ? (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ width: "80%" }}>
+              <div className={styles.expenseDivideListItem}>
+                <div className={styles.expenseDivideListItemLeft}>
                   <strong>{userInfo?.user.name}</strong> ({userInfo?.user.email}
                   ){" "}
                   <div>
-                    <Tag style={{ userSelect: "none" }}>(You)</Tag>
                     <Tag color="success" style={{ userSelect: "none" }}>
                       Lender
                     </Tag>
+                    <Tag style={{ userSelect: "none" }}>(You)</Tag>
                   </div>
                 </div>
 
-                <div style={{ flexGrow: 1 }}>
-                  <Input
+                <div className={styles.expenseDivideListItemRight}>
+                  <InputNumber
                     onChange={onOwnExpenseShareChange}
-                    type="number"
                     value={
                       newExpenseMeta.distributedTotalExpense
                         .amountPaidForOwnExpense
@@ -111,13 +115,10 @@ const StepDistributeExpense = ({
 
                     return (
                       <div
+                        className={styles.expenseDivideListItem}
                         key={participant?._id}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
                       >
-                        <div style={{ width: "80%" }}>
+                        <div className={styles.expenseDivideListItemLeft}>
                           <strong>{participant?.name}</strong> (
                           {participant?.email})
                           <div>
@@ -127,11 +128,11 @@ const StepDistributeExpense = ({
                           </div>
                         </div>
 
-                        <div style={{ flexGrow: 1 }}>
-                          <Input
+                        <div className={styles.expenseDivideListItemRight}>
+                          <InputNumber
                             type="number"
-                            onChange={(e) => {
-                              onParticipantExpenseChange(e, participantId);
+                            onChange={(value) => {
+                              onParticipantExpenseChange(value, participantId);
                             }}
                             value={
                               newExpenseMeta.distributedTotalExpense
@@ -145,28 +146,36 @@ const StepDistributeExpense = ({
                 )}
               </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <div style={{ width: "80%", border: "solid 1px red" }}>
-                  <strong>Total</strong>
+              <Divider />
+
+              <div className={styles.expenseDivideListItem}>
+                <div className={styles.expenseDivideListItemLeft}>
+                  <strong>Total:</strong>
                 </div>
 
-                <div style={{ flexGrow: 1, textAlign: "right" }}>xyz</div>
+                <div className={styles.expenseDivideListItemRight}>
+                  <strong>
+                    {getFormattedCurrencyString({
+                      amount:
+                        borrowerExpenseTotal +
+                        newExpenseMeta.distributedTotalExpense
+                          .amountPaidForOwnExpense,
+                    })}
+                  </strong>
+                </div>
               </div>
             </>
           ) : (
-            <Button
-              disabled={!newExpenseMeta.totalExpenseAmount}
-              onClick={() => {
-                dispatch({ type: "INITIALIZE_EXPENSE_DISTRIBUTION" });
-              }}
-            >
-              Start dividing
-            </Button>
+            <div className={styles.containerBtnStartDividing}>
+              <Button
+                disabled={!newExpenseMeta.totalExpenseAmount}
+                onClick={() => {
+                  dispatch({ type: "INITIALIZE_EXPENSE_DISTRIBUTION" });
+                }}
+              >
+                Start dividing
+              </Button>
+            </div>
           )}
         </div>
       </div>
