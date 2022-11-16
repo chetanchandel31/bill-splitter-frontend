@@ -5,7 +5,7 @@ const mockExpenseMeta: NewExpenseMeta = {
   currentStep: 0,
   expenseTitle: "",
   isModalVisible: true,
-  selectedParticipantsId: [],
+  arrayOfSelectedParticipantId: [],
   totalExpenseAmount: 0,
   distributedTotalExpense: {
     amountPaidForOwnExpense: 0,
@@ -26,7 +26,7 @@ describe("getStepsErrors", () => {
       getFirstStepErrors({
         ...mockExpenseMeta,
         expenseTitle: "my expense",
-        selectedParticipantsId: [],
+        arrayOfSelectedParticipantId: [],
       })
     ).toEqual("You need to select atleast one participant other than yourself");
 
@@ -34,7 +34,7 @@ describe("getStepsErrors", () => {
       getFirstStepErrors({
         ...mockExpenseMeta,
         expenseTitle: "my expense",
-        selectedParticipantsId: ["mockID"],
+        arrayOfSelectedParticipantId: ["mockID"],
       })
     ).toEqual("");
   });

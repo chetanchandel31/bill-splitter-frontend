@@ -57,7 +57,7 @@ const StepExpenseDetails = ({
 
         <GroupMembersList
           onChange={handleChange}
-          selectedParticipantsId={newExpenseMeta.selectedParticipantsId}
+          selectedParticipantsId={newExpenseMeta.arrayOfSelectedParticipantId}
         />
       </div>
     </div>

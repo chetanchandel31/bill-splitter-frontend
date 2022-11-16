@@ -4,7 +4,7 @@ export type NewExpenseMeta = {
   isModalVisible: boolean;
   currentStep: number;
   expenseTitle: string;
-  selectedParticipantsId: string[];
+  arrayOfSelectedParticipantId: string[]; // TODO: arrayOfSelectedParticipantId
   totalExpenseAmount: number;
   distributedTotalExpense: {
     amountPaidForOwnExpense: number;
@@ -19,7 +19,7 @@ export const initialStateNewExpenseMeta: Readonly<NewExpenseMeta> = {
   currentStep: 0,
   expenseTitle: "",
   totalExpenseAmount: 0,
-  selectedParticipantsId: [],
+  arrayOfSelectedParticipantId: [],
   distributedTotalExpense: {
     amountPaidForOwnExpense: 0,
     borrowerToExpenseMap: {},
@@ -58,8 +58,8 @@ export const reducerNewExpenseMeta = (
     case "SELECT_PARTICIPANT": {
       return {
         ...state,
-        selectedParticipantsId: [
-          ...state.selectedParticipantsId,
+        arrayOfSelectedParticipantId: [
+          ...state.arrayOfSelectedParticipantId,
           action.payload.participantId,
         ],
       };
@@ -68,7 +68,7 @@ export const reducerNewExpenseMeta = (
     case "UNSELECT_PARTICIPANT": {
       return {
         ...state,
-        selectedParticipantsId: state.selectedParticipantsId.filter(
+        arrayOfSelectedParticipantId: state.arrayOfSelectedParticipantId.filter(
           (participantId) => participantId !== action.payload.participantId
         ),
       };
@@ -76,11 +76,12 @@ export const reducerNewExpenseMeta = (
 
     case "INITIALIZE_EXPENSE_DISTRIBUTION": {
       const dividedExpenseAmount =
-        state.totalExpenseAmount / (state.selectedParticipantsId.length + 1);
+        state.totalExpenseAmount /
+        (state.arrayOfSelectedParticipantId.length + 1);
 
       const borrowerToExpenseMap: { [id: string]: number } = {};
 
-      state.selectedParticipantsId.forEach((participantId) => {
+      state.arrayOfSelectedParticipantId.forEach((participantId) => {
         borrowerToExpenseMap[participantId] = dividedExpenseAmount;
       });
 
@@ -89,6 +90,32 @@ export const reducerNewExpenseMeta = (
         distributedTotalExpense: {
           amountPaidForOwnExpense: dividedExpenseAmount,
           borrowerToExpenseMap,
+        },
+      };
+    }
+
+    case "UPDATE_PARTICIPANT_EXPENSE_DISTRIBUTION": {
+      const { amount, participantId } = action.payload;
+
+      // deep copying
+      const newDistributedTotalExpense: NewExpenseMeta["distributedTotalExpense"] =
+        JSON.parse(JSON.stringify(state.distributedTotalExpense));
+
+      newDistributedTotalExpense.borrowerToExpenseMap[participantId] =
+        amount || 1;
+
+      return {
+        ...state,
+        distributedTotalExpense: newDistributedTotalExpense,
+      };
+    }
+
+    case "UPDATE_OWN_SHARE_IN_EXPENSE_DISTRIBUTION": {
+      return {
+        ...state,
+        distributedTotalExpense: {
+          ...state.distributedTotalExpense,
+          amountPaidForOwnExpense: action.payload.amount || 1,
         },
       };
     }

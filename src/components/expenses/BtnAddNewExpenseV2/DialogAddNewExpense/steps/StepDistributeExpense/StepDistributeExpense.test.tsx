@@ -7,7 +7,7 @@ const mockNewExpenseMeta: NewExpenseMeta = {
   currentStep: 1,
   expenseTitle: "",
   isModalVisible: true,
-  selectedParticipantsId: [],
+  arrayOfSelectedParticipantId: [],
   totalExpenseAmount: 0,
   distributedTotalExpense: {
     amountPaidForOwnExpense: 0,

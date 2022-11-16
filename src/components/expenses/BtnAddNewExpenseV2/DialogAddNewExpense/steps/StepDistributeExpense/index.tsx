@@ -1,4 +1,4 @@
-import { Button, Input, Typography } from "antd";
+import { Button, Input, Tag, Typography } from "antd";
 import { actionTypeNewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/actions";
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import { useAuth } from "contexts/auth-context";
@@ -26,20 +26,42 @@ const StepDistributeExpense = ({
     });
   };
 
+  const onOwnExpenseShareChange = (e: ChangeEvent<HTMLInputElement>) => {
+    dispatch({
+      type: "UPDATE_OWN_SHARE_IN_EXPENSE_DISTRIBUTION",
+      payload: { amount: Number(e.target.value) },
+    });
+  };
+
+  const onParticipantExpenseChange = (
+    e: ChangeEvent<HTMLInputElement>,
+    participantId: string
+  ) => {
+    dispatch({
+      type: "UPDATE_PARTICIPANT_EXPENSE_DISTRIBUTION",
+      payload: {
+        amount: Number(e.target.value),
+        participantId,
+      },
+    });
+  };
+
   return (
     <div>
-      <div>
-        <Typography.Title level={5}>
-          How much did the entire expense cost?
-        </Typography.Title>
+      {!isExpenseDistributionInitialised(newExpenseMeta) && (
+        <div>
+          <Typography.Title level={5}>
+            How much did the entire expense cost?
+          </Typography.Title>
 
-        <Input
-          placeholder="Total Expense Amount"
-          type="number"
-          onChange={onExpenseTotalChange}
-          value={newExpenseMeta.totalExpenseAmount}
-        />
-      </div>
+          <Input
+            placeholder="Total Expense Amount"
+            type="number"
+            onChange={onExpenseTotalChange}
+            value={newExpenseMeta.totalExpenseAmount}
+          />
+        </div>
+      )}
 
       <div>
         <Typography.Title level={5}>
@@ -50,39 +72,90 @@ const StepDistributeExpense = ({
         <div>
           {isExpenseDistributionInitialised(newExpenseMeta) ? (
             <>
-              <div>
-                {userInfo?.user.name} ({userInfo?.user.email})
-                <Input
-                  disabled
-                  type="number"
-                  onChange={() => {}}
-                  value={
-                    newExpenseMeta.distributedTotalExpense
-                      .amountPaidForOwnExpense
-                  }
-                />
-              </div>
-              <div>
-                {newExpenseMeta.selectedParticipantsId.map((participantId) => {
-                  const participant = getParticipantDetails({
-                    participantId,
-                    selectedGroupDetails,
-                  });
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ width: "80%" }}>
+                  <strong>{userInfo?.user.name}</strong> ({userInfo?.user.email}
+                  ){" "}
+                  <div>
+                    <Tag style={{ userSelect: "none" }}>(You)</Tag>
+                    <Tag color="success" style={{ userSelect: "none" }}>
+                      Lender
+                    </Tag>
+                  </div>
+                </div>
 
-                  return (
-                    <div key={participantId}>
-                      {participant?.name} ({participant?.email})
-                      <Input
-                        type="number"
-                        onChange={() => {}}
-                        value={
-                          newExpenseMeta.distributedTotalExpense
-                            .borrowerToExpenseMap[participantId]
-                        }
-                      />
-                    </div>
-                  );
-                })}
+                <div style={{ flexGrow: 1 }}>
+                  <Input
+                    onChange={onOwnExpenseShareChange}
+                    type="number"
+                    value={
+                      newExpenseMeta.distributedTotalExpense
+                        .amountPaidForOwnExpense
+                    }
+                  />
+                </div>
+              </div>
+
+              <div>
+                {newExpenseMeta.arrayOfSelectedParticipantId.map(
+                  (participantId) => {
+                    const participant = getParticipantDetails({
+                      participantId,
+                      selectedGroupDetails,
+                    });
+
+                    return (
+                      <div
+                        key={participant?._id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <div style={{ width: "80%" }}>
+                          <strong>{participant?.name}</strong> (
+                          {participant?.email})
+                          <div>
+                            <Tag color="warning" style={{ userSelect: "none" }}>
+                              Borrower
+                            </Tag>
+                          </div>
+                        </div>
+
+                        <div style={{ flexGrow: 1 }}>
+                          <Input
+                            type="number"
+                            onChange={(e) => {
+                              onParticipantExpenseChange(e, participantId);
+                            }}
+                            value={
+                              newExpenseMeta.distributedTotalExpense
+                                .borrowerToExpenseMap[participantId]
+                            }
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ width: "80%", border: "solid 1px red" }}>
+                  <strong>Total</strong>
+                </div>
+
+                <div style={{ flexGrow: 1, textAlign: "right" }}>xyz</div>
               </div>
             </>
           ) : (
@@ -95,8 +168,6 @@ const StepDistributeExpense = ({
               Start dividing
             </Button>
           )}
-
-          <pre>{JSON.stringify(newExpenseMeta, null, 2)}</pre>
         </div>
       </div>
     </div>
