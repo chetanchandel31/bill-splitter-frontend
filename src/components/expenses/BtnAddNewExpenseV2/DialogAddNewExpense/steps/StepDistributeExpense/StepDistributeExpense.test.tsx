@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import StepDistributeExpense from ".";
 
@@ -61,6 +61,19 @@ describe("<StepDistributeExpense />", () => {
     expect(btnStartDividingExpense).toBeDisabled();
   });
 
+  test("checkbox-list for dividing expense should initially not be there", () => {
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={mockNewExpenseMeta}
+      />
+    );
+
+    const expenseDivideList = screen.queryByTestId("expense-divide-list");
+
+    expect(expenseDivideList).not.toBeInTheDocument();
+  });
+
   test("button to start dividing expense should not be disabled when total expense amount exists", () => {
     render(
       <StepDistributeExpense
@@ -74,6 +87,57 @@ describe("<StepDistributeExpense />", () => {
     });
 
     expect(btnStartDividingExpense).not.toBeDisabled();
+  });
+
+  test("checkbox-list for dividing expense shows correct number of list items after initialisation", () => {
+    // TODO: implementation detail, parent should check if user interaction actually works
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={{
+          ...mockNewExpenseMeta,
+          arrayOfSelectedParticipantId: ["mockId", "mockId2"],
+          distributedTotalExpense: {
+            amountPaidForOwnExpense: 1,
+            borrowerToExpenseMap: {
+              mockId: 12,
+              mockId2: 123,
+            },
+          },
+        }}
+      />
+    );
+
+    const expenseDivideList = screen.getByTestId("expense-divide-list");
+
+    const lenderBadge = within(expenseDivideList).getByText(/lender/i);
+    const borrowerBadges = within(expenseDivideList).getAllByText(/borrower/i);
+
+    expect(lenderBadge).toBeInTheDocument();
+    expect(borrowerBadges.length).toBe(2);
+  });
+
+  test("shows correct total", () => {
+    render(
+      <StepDistributeExpense
+        dispatch={mockDispatch}
+        newExpenseMeta={{
+          ...mockNewExpenseMeta,
+          arrayOfSelectedParticipantId: ["mockId", "mockId2"],
+          distributedTotalExpense: {
+            amountPaidForOwnExpense: 1,
+            borrowerToExpenseMap: {
+              mockId: 12,
+              mockId2: 123,
+            },
+          },
+        }}
+      />
+    );
+
+    const expenseTotal = screen.getByTestId("expense-total");
+
+    expect(expenseTotal.textContent).toBe("₹136.00"); // 1 + 12 + 123
   });
 
   test("clicking on 'start dividing' button fires correct function", () => {
@@ -95,6 +159,4 @@ describe("<StepDistributeExpense />", () => {
       type: "INITIALIZE_EXPENSE_DISTRIBUTION",
     });
   });
-
-  // TODO: when map exists btn shouldn't exist but textfields should
 });

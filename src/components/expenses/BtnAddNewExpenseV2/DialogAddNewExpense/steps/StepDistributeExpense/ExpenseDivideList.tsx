@@ -3,7 +3,7 @@ import { actionTypeNewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2
 import { NewExpenseMeta } from "components/expenses/BtnAddNewExpenseV2/state/reducers";
 import { useAuth } from "contexts/auth-context";
 import { useSelectedGroup } from "contexts/group-context";
-import { Dispatch } from "react";
+import React, { Dispatch } from "react";
 import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 import styles from "./stepDistributeExpense.module.css";
@@ -86,7 +86,7 @@ const ExpenseDivideList = ({
   });
 
   return (
-    <>
+    <div data-testId="expense-divide-list">
       <div className={styles.expenseDivideListItem}>
         <div className={styles.expenseDivideListItemLeft}>
           <strong>{userInfo?.user.name}</strong> ({userInfo?.user.email}){" "}
@@ -118,7 +118,7 @@ const ExpenseDivideList = ({
         </div>
 
         <div className={styles.expenseDivideListItemRight}>
-          <strong>
+          <strong data-testId="expense-total">
             {getFormattedCurrencyString({
               amount:
                 borrowerExpenseTotal +
@@ -127,7 +127,7 @@ const ExpenseDivideList = ({
           </strong>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
