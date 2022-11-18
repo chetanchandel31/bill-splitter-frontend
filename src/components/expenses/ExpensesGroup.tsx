@@ -16,7 +16,6 @@ import { getParticipantDetails } from "utils";
 import { getFormattedCurrencyString } from "utils/getFormattedCurrencyString";
 import BtnAddNewExpense from "./BtnAddNewExpenseV2";
 import styles from "./expensesGroup.module.css";
-import AddExpenseBtn from "./StepsAddExpense/AddExpenseBtn";
 
 const { Panel } = Collapse;
 
@@ -199,7 +198,6 @@ const ExpensesGroup = () => {
 
   return (
     <>
-      <AddExpenseBtn />
       <BtnAddNewExpense />
 
       {expenseList}

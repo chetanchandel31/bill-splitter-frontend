@@ -11,6 +11,7 @@ import {
   getFirstStepErrors,
   getSecondStepErrors,
 } from "./steps/utils/getStepsErrors";
+import { useSelectedGroup } from "contexts/group-context";
 
 const { Step } = Steps;
 
@@ -25,6 +26,8 @@ const DialogAddNewExpense = ({
   dispatch,
   newExpenseMeta,
 }: DialogAddNEwExpenseProps) => {
+  const { selectedGroupDetails } = useSelectedGroup();
+
   const { currentStep, isModalVisible } = newExpenseMeta;
 
   const hideModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: false });
@@ -50,22 +53,21 @@ const DialogAddNewExpense = ({
     if (currentStep < steps.length - 1) {
       dispatch({ type: "INCREMENT_STEP" });
     } else {
-      // make network call, either basic or advanced
+      const borrowerToExpenseMap =
+        newExpenseMeta.distributedTotalExpense.borrowerToExpenseMap;
 
-      console.log(createExpense, "create expense network call");
-
-      // const { selectedParticipantsId } = newExpenseMeta;
-      // const perParticipantExpenseAmount =
-      //   totalExpenseAmount / (selectedParticipantsId.length + 1);
-      // createExpense({
-      //   expenseTitle,
-      //   groupId: selectedGroupDetails?._id ?? "",
-      //   amountPaidForOwnExpense: perParticipantExpenseAmount,
-      //   borrowers: selectedParticipantsId.map((id) => ({
-      //     amountBorrowed: perParticipantExpenseAmount,
-      //     user: id,
-      //   })),
-      // });
+      createExpense({
+        expenseTitle: newExpenseMeta.expenseTitle,
+        groupId: selectedGroupDetails?._id ?? "",
+        amountPaidForOwnExpense:
+          newExpenseMeta.distributedTotalExpense.amountPaidForOwnExpense,
+        borrowers: newExpenseMeta.arrayOfSelectedParticipantId.map(
+          (participantId) => ({
+            amountBorrowed: borrowerToExpenseMap[participantId] ?? 1,
+            user: participantId,
+          })
+        ),
+      });
     }
   };
 

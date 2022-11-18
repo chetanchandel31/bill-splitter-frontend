@@ -18,10 +18,7 @@ const BtnAddNewExpense = () => {
   const showModal = () => dispatch({ type: "DO_SHOW_MODAL", payload: true });
 
   return (
-    <div
-      className={styles.addExpenseBtnContainer}
-      style={{ border: "solid 1px red" }} // TODO: remove
-    >
+    <div className={styles.addExpenseBtnContainer}>
       <Button icon={<PlusOutlined />} onClick={showModal} type="primary">
         Add expense
       </Button>
