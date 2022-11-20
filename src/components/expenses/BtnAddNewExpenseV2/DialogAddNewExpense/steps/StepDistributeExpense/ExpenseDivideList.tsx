@@ -70,6 +70,8 @@ const ExpenseDivideList = ({
 
         <div className={styles.expenseDivideListItemRight}>
           <InputNumber
+            aria-label="divided-expense"
+            name={participant?.name}
             type="number"
             onChange={(value) => {
               onParticipantExpenseChange(value, participantId);
@@ -86,7 +88,7 @@ const ExpenseDivideList = ({
   });
 
   return (
-    <div data-testId="expense-divide-list">
+    <div data-testid="expense-divide-list">
       <div className={styles.expenseDivideListItem}>
         <div className={styles.expenseDivideListItemLeft}>
           <strong>{userInfo?.user.name}</strong> ({userInfo?.user.email}){" "}
@@ -100,6 +102,7 @@ const ExpenseDivideList = ({
 
         <div className={styles.expenseDivideListItemRight}>
           <InputNumber
+            aria-label="divided-expense"
             onChange={onOwnExpenseShareChange}
             value={
               newExpenseMeta.distributedTotalExpense.amountPaidForOwnExpense
@@ -118,7 +121,7 @@ const ExpenseDivideList = ({
         </div>
 
         <div className={styles.expenseDivideListItemRight}>
-          <strong data-testId="expense-total">
+          <strong data-testid="expense-total">
             {getFormattedCurrencyString({
               amount:
                 borrowerExpenseTotal +
