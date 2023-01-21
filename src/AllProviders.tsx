@@ -11,7 +11,10 @@ const AllProviders = ({ children }: { children: ReactNode }) => {
   // data fetched in one test was available in another test
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { refetchOnWindowFocus: false, retry: !isTestingEnv() },
+      queries: {
+        refetchOnWindowFocus: false,
+        retry: false,
+      },
     },
     logger: {
       log: console.log,
