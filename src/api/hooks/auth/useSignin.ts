@@ -15,7 +15,7 @@ type UseSigninParams = {
   onSuccess?: (data: SuccessResponseSignin) => void;
 };
 
-const signIn: MutationFunction<SuccessResponseSignin, PayloadSignin> = ({
+const signUp: MutationFunction<SuccessResponseSignin, PayloadSignin> = ({
   email,
   password,
 }) => {
@@ -27,7 +27,7 @@ const useSignin = ({ onError, onSuccess }: UseSigninParams) => {
     SuccessResponseSignin,
     AxiosErrorBillSplitter,
     PayloadSignin
-  >(signIn, {
+  >(signUp, {
     onSuccess,
     onError,
   });
